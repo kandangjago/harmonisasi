@@ -1,6 +1,6 @@
 /**
  * SIMPLIFIED.JS
- * Modifikasi dari kbj.js untuk mendukung tambahan Aksara Rekan dan Aksara Murda.
+ * Modifikasi dari kbj.js untuk mendukung tambahan Aksara Rekan, Aksara Murda, dan Aksara Swara (termasuk AI & AU).
  *
  * PANDUAN PENGETIKAN AKSARA REKAN BARU (Berdasarkan Pelafalan IPA Arab):
  * q   -> ꦐ (ق) - IPA: /q/
@@ -17,6 +17,10 @@
  * TAMBAHAN AKSARA MURDA:
  * C -> ꦖ
  * R -> ꦬ
+ * 
+ * TAMBAHAN AKSARA SWARA:
+ * AI -> ꦍ
+ * AU -> ꦎꦴ
  */
 
 const KAMUS_AKSARA = {
@@ -48,7 +52,8 @@ const AKSARA_MURDA = {
 };
 
 const SWARA_MAP = {
-    'A':'ꦄ', 'I':'ꦆ', 'U':'ꦈ', 'E':'ꦄꦼ', 'É':'ꦌ', 'È':'ꦌ', 'Ê':'ꦄꦼ', 'O':'ꦎ'
+    'A':'ꦄ', 'I':'ꦆ', 'U':'ꦈ', 'E':'ꦄꦼ', 'É':'ꦌ', 'È':'ꦌ', 'Ê':'ꦄꦼ', 'O':'ꦎ',
+    'AI':'ꦍ', 'AU':'ꦎꦴ' // Penambahan Aksara Swara AI dan AU
 };
 
 const ANGKA = ['꧐','꧑','꧒','꧓','꧔','꧕','꧖','꧗','꧘','꧙'];
@@ -409,7 +414,7 @@ function transliterasiKalimat(teks) {
         let lineJoined = kataJawa.join(''); 
         
         lineJoined = lineJoined.replace(/꧀ꦊ/g, '꧀ꦭꦼ');
-        lineJoined = lineJoined.replace(/꧀([ꦄꦆꦈꦌꦎ])/g, '꧀\u200C$1');
+        lineJoined = lineJoined.replace(/꧀([ꦄꦆꦈꦌꦎꦍ])/g, '꧀\u200C$1');
 
         lineJoined = lineJoined.replace(/([ꦀ-꧟])꧀([ꦀ-꧟])(꦳?)꧀([ꦀ-꧟])/g, function(match, p1, p2, p3, p4) {
             if (p2 === 'ꦥ' || p2 === 'ꦱ') return match; 
@@ -561,11 +566,15 @@ function transliterasiSingleKata(rawLatin) {
         let c2 = c2_raw.toLowerCase();
         let c1 = c1_raw.toLowerCase();
 
-        if ((c2_raw === 'NY' || c2_raw === 'Ny') && AKSARA_MURDA['ny']) {
+        // Pengecekan 2 karakter untuk Aksara Swara Gabungan (AI & AU)
+        if (['AI', 'Ai', 'ai'].includes(c2_raw) && SWARA_MAP['AI']) {
+            c = 'AI'; isSwara = true; jump = 2;
+        } else if (['AU', 'Au', 'au'].includes(c2_raw) && SWARA_MAP['AU']) {
+            c = 'AU'; isSwara = true; jump = 2;
+        } else if ((c2_raw === 'NY' || c2_raw === 'Ny') && AKSARA_MURDA['ny']) {
             c = 'ny'; jump = 2; isMurda = true;
         } else if (c1_raw === 'J' && AKSARA_MURDA['j']) {
             c = 'j'; jump = 1; isMurda = true;
-        // Modifikasi check array includes c3 dan c2 untuk menangani transliterasi Arab/Rekan
         } else if (['ngx', 'xng', 'shh', 'xsy', 'tth'].includes(c3)) {
             c = c3; jump = 3;
         } else if (['ng','ny','dh','th','nx','kh','dz','gh','kx','rx','hx','sy','sh','hh','ts','dl','zh'].includes(c2)) {
