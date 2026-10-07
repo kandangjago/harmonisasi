@@ -15,7 +15,7 @@ const AKSARA_MURDA = {
 };
 
 const SWARA_MAP = {
-    'A':'ꦄ', 'I':'ꦆ', 'U':'ꦈ', 'E':'ꦌ', 'É':'ꦌ', 'È':'ꦌ', 'Ê':'ꦌ', 'O':'ꦎ'
+    'A':'ꦄ', 'I':'ꦆ', 'U':'ꦈ', 'E':'ꦄꦼ', 'É':'ꦌ', 'È':'ꦌ', 'Ê':'ꦄꦼ', 'O':'ꦎ'
 };
 
 const ANGKA = ['꧐','꧑','꧒','꧓','꧔','꧕','꧖','꧗','꧘','꧙'];
@@ -79,7 +79,6 @@ function updateParamFromManualInput() {
     document.getElementById('outParamJawa').innerText = transliterasiKalimat(val);
 }
 
-/* --- FUNGSI PARAMASASTRA (MORFOLOGI PAUGERAN KBJ) --- */
 function prosesParamasastra() {
     let ater = document.getElementById('selAter').value;
     let dasarRaw = document.getElementById('inDasar').value.trim();
@@ -355,7 +354,6 @@ function prosesParamasastra() {
     document.getElementById('outParamJawa').innerText = transliterasiKalimat(fullLatinDisplay);
 }
 
-/* --- ENGINE TRANSLITERASI UTAMA --- */
 function prosesTransliterasi() {
     let teksInput = document.getElementById('inputLatin').value;
     let hasil = transliterasiKalimat(teksInput);
@@ -365,7 +363,6 @@ function prosesTransliterasi() {
 function transliterasiKalimat(teks) {
     let teksDiolah = teks.replace(/e'/g, 'é').replace(/E'/g, 'É');
 
-    // ATURAN 8 KBJ: Anuswara + Konsonan Tidak Luluh (d, dh, b, g, j, th) WAJIB ditambah 'ha' di depan
     teksDiolah = teksDiolah.replace(/\b(mb|ndh|nd|nth|ngg|nj)/gim, function(match) {
         let isUpper = match[0] === match[0].toUpperCase();
         return (isUpper ? 'Ha' : 'ha') + match.toLowerCase();
@@ -376,22 +373,16 @@ function transliterasiKalimat(teks) {
         let kataKata = line.split(/\s+/);
         let kataJawa = kataKata.map(kata => transliterasiKata(kata));
         
-        // UNTUK SCRIPTO CONTINUA (TANPA SPASI ANTAR KATA)
         let lineJoined = kataJawa.join(''); 
         
         lineJoined = lineJoined.replace(/꧀ꦊ/g, '꧀ꦭꦼ');
-        
-        // Hanya Aksara Swara (A, I, U, E, O) yang diberi ZWNJ (\u200C) setelah pangkon
         lineJoined = lineJoined.replace(/꧀([ꦄꦆꦈꦌꦎ])/g, '꧀\u200C$1');
 
-        // Pencegahan Tumpuk Tiga (Pasangan Ganda Antarkata)
         lineJoined = lineJoined.replace(/([ꦀ-꧟])꧀([ꦀ-꧟])(꦳?)꧀([ꦀ-꧟])/g, function(match, p1, p2, p3, p4) {
             if (p2 === 'ꦥ' || p2 === 'ꦱ') return match; 
             return p1 + '꧀\u200C' + p2 + p3 + '꧀' + p4; 
         });
 
-        // ATURAN MUTLAK PAUGERAN KBJ UNTUK PASANGAN DH:
-        // Memastikan bahwa SETIAP Pasangan Da Mahaprana (꧀ꦣ) DIPAKSA berubah menjadi Pasangan Da Murda (꧀ꦝ)
         lineJoined = lineJoined.replace(/꧀ꦣ/g, '꧀ꦝ');
 
         return lineJoined;
@@ -401,8 +392,6 @@ function transliterasiKalimat(teks) {
 
 function transliterasiKata(rawLatin) {
     if (!rawLatin) return "";
-
-    // ATURAN 6 KBJ: Di tengah kata 'n' mati + 'c'/'j'
     if (/[a-zA-Z]/i.test(rawLatin) && /(nc|nj)/i.test(rawLatin) && !/^\(/.test(rawLatin)) {
         let mainRes = transliterasiSingleKata(rawLatin);
         let altLatin = rawLatin.replace(/nc/gi, 'nyc').replace(/nj/gi, 'nyj');
@@ -412,7 +401,6 @@ function transliterasiKata(rawLatin) {
             return `${mainRes} (${altRes})`;
         }
     }
-
     return transliterasiSingleKata(rawLatin);
 }
 
@@ -429,7 +417,6 @@ function transliterasiSingleKata(rawLatin) {
         return abbr;
     }
 
-    // Aturan cerdas untuk ater-ater dak-, tak-, kok- yang bertemu r/y agar menggunakan pangkon.
     let prefixMatch = rawLatin.match(/^(dak|tak|kok)([ry])(.*)/i);
     if (prefixMatch) {
         let ater = prefixMatch[1].toLowerCase();
@@ -484,15 +471,12 @@ function transliterasiSingleKata(rawLatin) {
         return root + consonantToDouble + modSuffix;
     });
 
-    // ATURAN BARU YANG LEBIH CERDAS & AMAN:
-    // Hanya berlaku jika ater-ater digabungkan ke vokal menggunakan TANDA HUBUNG (misal: di-isi, dak-ombeni).
-    // Kata dasar seperti 'takon', 'koki', 'dian' akan diabaikan dan diproses normal.
     latinProcessed = latinProcessed.replace(/^(dak|tak|kok|ko|di|ka|ke)-([aiueoéèê])/i, function(match, p1, p2) {
         let p1Lower = p1.toLowerCase();
         if (['dak', 'tak', 'kok'].includes(p1Lower)) {
-            return p1.slice(0, -1) + 'kxhx' + p2; // dak-isi menjadi dakxhxisi (ꦢꦏ꧀ꦲꦶꦱꦶ)
+            return p1.slice(0, -1) + 'kxhx' + p2; 
         } else {
-            return p1 + 'hx' + p2; // di-isi menjadi dihxisi (ꦢꦶꦲꦶꦱꦶ)
+            return p1 + 'hx' + p2; 
         }
     });
 
