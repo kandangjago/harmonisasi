@@ -15,6 +15,7 @@
         tr:hover { background-color: #f1f1f1; }
         .aksara { font-family: 'Noto Sans Javanese', sans-serif; font-size: 1.5rem; color: #0056b3; }
         .code { font-family: monospace; background: #e9ecef; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem;}
+        .jgst { color: #d9534f; font-weight: bold; font-family: monospace; }
         .section-row { background-color: #e2e8f0; font-weight: bold; text-align: center; }
         .dash { color: #999; font-weight: normal; }
     </style>
@@ -42,6 +43,7 @@
                 <th>Tradisional</th>
                 <th>Unicode</th>
                 <th>Pelafalan (IPA) / Asal Arab</th>
+                <th>JGST</th>
             </tr>
         </thead>
         <tbody id="tableBody">
@@ -52,84 +54,84 @@
     <script>
         const aksaraData = [
             // AKSARA WYANJANA (NGLEGENA)
-            { cat: 'Wyanjana', id: 'h', lat: 'h', kbj: 'ꦲ', simp: 'ꦲ', mk: 'ꦲ', trad: 'ꦲ', uni: 'U+A9B2', ipa: '/h/ atau /a/', hana: 1, warga: 6 },
-            { cat: 'Wyanjana', id: 'n', lat: 'n', kbj: 'ꦤ', simp: 'ꦤ', mk: 'ꦤ', trad: 'ꦤ', uni: 'U+A9A4', ipa: '/n/', hana: 2, warga: 24 },
-            { cat: 'Wyanjana', id: 'c', lat: 'c', kbj: 'ꦕ', simp: 'ꦕ', mk: 'ꦕ', trad: 'ꦕ', uni: 'U+A995', ipa: '/tʃ/', hana: 3, warga: 7 },
-            { cat: 'Wyanjana', id: 'r', lat: 'r', kbj: 'ꦫ', simp: 'ꦫ', mk: 'ꦫ', trad: 'ꦫ', uni: 'U+A9AB', ipa: '/r/', hana: 4, warga: 18 },
-            { cat: 'Wyanjana', id: 'k', lat: 'k', kbj: 'ꦏ', simp: 'ꦏ', mk: 'ꦏ', trad: 'ꦏ', uni: 'U+A98F', ipa: '/k/', hana: 5, warga: 1 },
-            { cat: 'Wyanjana', id: 'd', lat: 'd', kbj: 'ꦢ', simp: 'ꦢ', mk: 'ꦢ', trad: 'ꦢ', uni: 'U+A9A2', ipa: '/d/', hana: 6, warga: 22 },
-            { cat: 'Wyanjana', id: 't', lat: 't', kbj: 'ꦠ', simp: 'ꦠ', mk: 'ꦠ', trad: 'ꦠ', uni: 'U+A9A0', ipa: '/t/', hana: 7, warga: 20 },
-            { cat: 'Wyanjana', id: 's', lat: 's', kbj: 'ꦱ', simp: 'ꦱ', mk: 'ꦱ', trad: 'ꦱ', uni: 'U+A9B1', ipa: '/s/', hana: 8, warga: 26 },
-            { cat: 'Wyanjana', id: 'w', lat: 'w', kbj: 'ꦮ', simp: 'ꦮ', mk: 'ꦮ', trad: 'ꦮ', uni: 'U+A9AE', ipa: '/w/', hana: 9, warga: 32 },
-            { cat: 'Wyanjana', id: 'l', lat: 'l', kbj: 'ꦭ', simp: 'ꦭ', mk: 'ꦭ', trad: 'ꦭ', uni: 'U+A9AD', ipa: '/l/', hana: 10, warga: 25 },
-            { cat: 'Wyanjana', id: 'p', lat: 'p', kbj: 'ꦥ', simp: 'ꦥ', mk: 'ꦥ', trad: 'ꦥ', uni: 'U+A9A5', ipa: '/p/', hana: 11, warga: 27 },
-            { cat: 'Wyanjana', id: 'dh', lat: 'dh', kbj: 'ꦣ', simp: 'ꦣ', mk: 'ꦝ', trad: 'ꦝ', uni: 'K: U+A9A3 | W: U+A99D', ipa: '/ɖ/', hana: 12, warga: 15 },
-            { cat: 'Wyanjana', id: 'j', lat: 'j', kbj: 'ꦗ', simp: 'ꦗ', mk: 'ꦗ', trad: 'ꦗ', uni: 'U+A997', ipa: '/dʒ/', hana: 13, warga: 9 },
-            { cat: 'Wyanjana', id: 'y', lat: 'y', kbj: 'ꦪ', simp: 'ꦪ', mk: 'ꦪ', trad: 'ꦪ', uni: 'U+A9AA', ipa: '/j/', hana: 14, warga: 12 },
-            { cat: 'Wyanjana', id: 'ny', lat: 'ny', kbj: 'ꦚ', simp: 'ꦚ', mk: 'ꦚ', trad: 'ꦚ', uni: 'U+A99A', ipa: '/ɲ/', hana: 15, warga: 11 },
-            { cat: 'Wyanjana', id: 'm', lat: 'm', kbj: 'ꦩ', simp: 'ꦩ', mk: 'ꦩ', trad: 'ꦩ', uni: 'U+A9A9', ipa: '/m/', hana: 16, warga: 31 },
-            { cat: 'Wyanjana', id: 'g', lat: 'g', kbj: 'ꦒ', simp: 'ꦒ', mk: 'ꦒ', trad: 'ꦒ', uni: 'U+A992', ipa: '/g/', hana: 17, warga: 3 },
-            { cat: 'Wyanjana', id: 'b', lat: 'b', kbj: 'ꦧ', simp: 'ꦧ', mk: 'ꦧ', trad: 'ꦧ', uni: 'U+A9A7', ipa: '/b/', hana: 18, warga: 29 },
-            { cat: 'Wyanjana', id: 'th', lat: 'th', kbj: 'ꦛ', simp: 'ꦛ', mk: 'ꦛ', trad: 'ꦛ', uni: 'U+A99B', ipa: '/ʈ/', hana: 19, warga: 13 },
-            { cat: 'Wyanjana', id: 'ng', lat: 'ng', kbj: 'ꦔ', simp: 'ꦔ', mk: 'ꦔ', trad: 'ꦔ', uni: 'U+A994', ipa: '/ŋ/', hana: 20, warga: 5 },
+            { cat: 'Wyanjana', id: 'h', lat: 'h', kbj: 'ꦲ', simp: 'ꦲ', mk: 'ꦲ', trad: 'ꦲ', uni: 'U+A9B2', ipa: '/h/ atau /a/', jgst: 'ha', hana: 1, warga: 6 },
+            { cat: 'Wyanjana', id: 'n', lat: 'n', kbj: 'ꦤ', simp: 'ꦤ', mk: 'ꦤ', trad: 'ꦤ', uni: 'U+A9A4', ipa: '/n/', jgst: 'na', hana: 2, warga: 24 },
+            { cat: 'Wyanjana', id: 'c', lat: 'c', kbj: 'ꦕ', simp: 'ꦕ', mk: 'ꦕ', trad: 'ꦕ', uni: 'U+A995', ipa: '/tʃ/', jgst: 'ca', hana: 3, warga: 7 },
+            { cat: 'Wyanjana', id: 'r', lat: 'r', kbj: 'ꦫ', simp: 'ꦫ', mk: 'ꦫ', trad: 'ꦫ', uni: 'U+A9AB', ipa: '/r/', jgst: 'ra', hana: 4, warga: 18 },
+            { cat: 'Wyanjana', id: 'k', lat: 'k', kbj: 'ꦏ', simp: 'ꦏ', mk: 'ꦏ', trad: 'ꦏ', uni: 'U+A98F', ipa: '/k/', jgst: 'ka', hana: 5, warga: 1 },
+            { cat: 'Wyanjana', id: 'd', lat: 'd', kbj: 'ꦢ', simp: 'ꦢ', mk: 'ꦢ', trad: 'ꦢ', uni: 'U+A9A2', ipa: '/d/', jgst: 'da', hana: 6, warga: 22 },
+            { cat: 'Wyanjana', id: 't', lat: 't', kbj: 'ꦠ', simp: 'ꦠ', mk: 'ꦠ', trad: 'ꦠ', uni: 'U+A9A0', ipa: '/t/', jgst: 'ta', hana: 7, warga: 20 },
+            { cat: 'Wyanjana', id: 's', lat: 's', kbj: 'ꦱ', simp: 'ꦱ', mk: 'ꦱ', trad: 'ꦱ', uni: 'U+A9B1', ipa: '/s/', jgst: 'sa', hana: 8, warga: 26 },
+            { cat: 'Wyanjana', id: 'w', lat: 'w', kbj: 'ꦮ', simp: 'ꦮ', mk: 'ꦮ', trad: 'ꦮ', uni: 'U+A9AE', ipa: '/w/', jgst: 'wa', hana: 9, warga: 32 },
+            { cat: 'Wyanjana', id: 'l', lat: 'l', kbj: 'ꦭ', simp: 'ꦭ', mk: 'ꦭ', trad: 'ꦭ', uni: 'U+A9AD', ipa: '/l/', jgst: 'la', hana: 10, warga: 25 },
+            { cat: 'Wyanjana', id: 'p', lat: 'p', kbj: 'ꦥ', simp: 'ꦥ', mk: 'ꦥ', trad: 'ꦥ', uni: 'U+A9A5', ipa: '/p/', jgst: 'pa', hana: 11, warga: 27 },
+            { cat: 'Wyanjana', id: 'dh', lat: 'dh', kbj: 'ꦣ', simp: 'ꦣ', mk: 'ꦝ', trad: 'ꦝ', uni: 'K: U+A9A3 | W: U+A99D', ipa: '/ɖ/', jgst: 'ḍa', hana: 12, warga: 15 },
+            { cat: 'Wyanjana', id: 'j', lat: 'j', kbj: 'ꦗ', simp: 'ꦗ', mk: 'ꦗ', trad: 'ꦗ', uni: 'U+A997', ipa: '/dʒ/', jgst: 'ja', hana: 13, warga: 9 },
+            { cat: 'Wyanjana', id: 'y', lat: 'y', kbj: 'ꦪ', simp: 'ꦪ', mk: 'ꦪ', trad: 'ꦪ', uni: 'U+A9AA', ipa: '/j/', jgst: 'ya', hana: 14, warga: 12 },
+            { cat: 'Wyanjana', id: 'ny', lat: 'ny', kbj: 'ꦚ', simp: 'ꦚ', mk: 'ꦚ', trad: 'ꦚ', uni: 'U+A99A', ipa: '/ɲ/', jgst: 'ña', hana: 15, warga: 11 },
+            { cat: 'Wyanjana', id: 'm', lat: 'm', kbj: 'ꦩ', simp: 'ꦩ', mk: 'ꦩ', trad: 'ꦩ', uni: 'U+A9A9', ipa: '/m/', jgst: 'ma', hana: 16, warga: 31 },
+            { cat: 'Wyanjana', id: 'g', lat: 'g', kbj: 'ꦒ', simp: 'ꦒ', mk: 'ꦒ', trad: 'ꦒ', uni: 'U+A992', ipa: '/g/', jgst: 'ga', hana: 17, warga: 3 },
+            { cat: 'Wyanjana', id: 'b', lat: 'b', kbj: 'ꦧ', simp: 'ꦧ', mk: 'ꦧ', trad: 'ꦧ', uni: 'U+A9A7', ipa: '/b/', jgst: 'ba', hana: 18, warga: 29 },
+            { cat: 'Wyanjana', id: 'th', lat: 'th', kbj: 'ꦛ', simp: 'ꦛ', mk: 'ꦛ', trad: 'ꦛ', uni: 'U+A99B', ipa: '/ʈ/', jgst: 'ṭa', hana: 19, warga: 13 },
+            { cat: 'Wyanjana', id: 'ng', lat: 'ng', kbj: 'ꦔ', simp: 'ꦔ', mk: 'ꦔ', trad: 'ꦔ', uni: 'U+A994', ipa: '/ŋ/', jgst: 'ṅa', hana: 20, warga: 5 },
             
             // AKSARA MURDA
-            { cat: 'Murda', id: 'N_M', lat: 'N', kbj: 'ꦟ', simp: 'ꦟ', mk: 'ꦟ', trad: 'ꦟ', uni: 'U+A99F', ipa: '/ɳ/', hana: 2.1, warga: 17 },
-            { cat: 'Murda', id: 'K_M', lat: 'K', kbj: 'ꦑ', simp: 'ꦑ', mk: 'ꦑ', trad: 'ꦑ', uni: 'U+A990', ipa: '/kʰ/', hana: 5.1, warga: 2 },
-            { cat: 'Murda', id: 'T_M', lat: 'T', kbj: 'ꦡ', simp: 'ꦡ', mk: 'ꦡ', trad: 'ꦡ', uni: 'U+A9A1', ipa: '/tʰ/', hana: 7.1, warga: 21 },
-            { cat: 'Murda', id: 'S_M', lat: 'S', kbj: 'ꦯ', simp: 'ꦯ', mk: 'ꦯ', trad: 'ꦯ', uni: 'U+A9AF', ipa: '/ʃ/', hana: 8.1, warga: 12.5 },
-            { cat: 'Murda', id: 'P_M', lat: 'P', kbj: 'ꦦ', simp: 'ꦦ', mk: 'ꦦ', trad: 'ꦦ', uni: 'U+A9A6', ipa: '/pʰ/', hana: 11.1, warga: 28 },
-            { cat: 'Murda', id: 'G_M', lat: 'G', kbj: 'ꦓ', simp: 'ꦓ', mk: 'ꦓ', trad: 'ꦓ', uni: 'U+A993', ipa: '/gʱ/', hana: 17.1, warga: 4 },
-            { cat: 'Murda', id: 'B_M', lat: 'B', kbj: 'ꦨ', simp: 'ꦨ', mk: 'ꦨ', trad: 'ꦨ', uni: 'U+A9A8', ipa: '/bʱ/', hana: 18.1, warga: 30 },
-            { cat: 'Murda', id: 'NY_M', lat: 'NY', kbj: 'ꦘ', simp: 'ꦘ', mk: 'ꦘ', trad: 'ꦘ', uni: 'U+A999', ipa: '/ɲ/', hana: 15.1, warga: 11.5 },
-            { cat: 'Murda', id: 'J_M', lat: 'J', kbj: '-', simp: 'ꦙ', mk: 'ꦙ', trad: 'ꦙ', uni: 'U+A998', ipa: '/dʒʱ/', hana: 13.1, warga: 10 },
-            { cat: 'Murda', id: 'C_M', lat: 'C', kbj: '-', simp: 'ꦖ', mk: 'ꦖ', trad: 'ꦖ', uni: 'U+A996', ipa: '/tʃʰ/', hana: 3.1, warga: 8 },
-            { cat: 'Murda', id: 'R_M', lat: 'R', kbj: '-', simp: 'ꦬ', mk: 'ꦬ', trad: 'ꦬ', uni: 'U+A9AC', ipa: '/r/', hana: 4.1, warga: 18.1 },
-            { cat: 'Murda', id: 'DH_M', lat: 'DH', kbj: '-', simp: 'ꦝ', mk: 'ꦞ', trad: 'ꦞ', uni: 'U+A99D / U+A99E', ipa: '/ɖʱ/', hana: 12.1, warga: 16 },
+            { cat: 'Murda', id: 'N_M', lat: 'N', kbj: 'ꦟ', simp: 'ꦟ', mk: 'ꦟ', trad: 'ꦟ', uni: 'U+A99F', ipa: '/ɳ/', jgst: 'ṇa', hana: 2.1, warga: 17 },
+            { cat: 'Murda', id: 'K_M', lat: 'K', kbj: 'ꦑ', simp: 'ꦑ', mk: 'ꦑ', trad: 'ꦑ', uni: 'U+A990', ipa: '/kʰ/', jgst: 'qa', hana: 5.1, warga: 2 },
+            { cat: 'Murda', id: 'T_M', lat: 'T', kbj: 'ꦡ', simp: 'ꦡ', mk: 'ꦡ', trad: 'ꦡ', uni: 'U+A9A1', ipa: '/tʰ/', jgst: 'tha', hana: 7.1, warga: 21 },
+            { cat: 'Murda', id: 'S_M', lat: 'S', kbj: 'ꦯ', simp: 'ꦯ', mk: 'ꦯ', trad: 'ꦯ', uni: 'U+A9AF', ipa: '/ʃ/', jgst: 'śa', hana: 8.1, warga: 12.5 },
+            { cat: 'Murda', id: 'P_M', lat: 'P', kbj: 'ꦦ', simp: 'ꦦ', mk: 'ꦦ', trad: 'ꦦ', uni: 'U+A9A6', ipa: '/pʰ/', jgst: 'p̣a', hana: 11.1, warga: 28 },
+            { cat: 'Murda', id: 'G_M', lat: 'G', kbj: 'ꦓ', simp: 'ꦓ', mk: 'ꦓ', trad: 'ꦓ', uni: 'U+A993', ipa: '/gʱ/', jgst: 'g̣a', hana: 17.1, warga: 4 },
+            { cat: 'Murda', id: 'B_M', lat: 'B', kbj: 'ꦨ', simp: 'ꦨ', mk: 'ꦨ', trad: 'ꦨ', uni: 'U+A9A8', ipa: '/bʱ/', jgst: 'ḅa', hana: 18.1, warga: 30 },
+            { cat: 'Murda', id: 'NY_M', lat: 'NY', kbj: 'ꦘ', simp: 'ꦘ', mk: 'ꦘ', trad: 'ꦘ', uni: 'U+A999', ipa: '/ɲ/', jgst: 'j̣a', hana: 15.1, warga: 11.5 },
+            { cat: 'Murda', id: 'J_M', lat: 'J', kbj: '-', simp: 'ꦙ', mk: 'ꦙ', trad: 'ꦙ', uni: 'U+A998', ipa: '/dʒʱ/', jgst: 'jña', hana: 13.1, warga: 10 },
+            { cat: 'Murda', id: 'C_M', lat: 'C', kbj: '-', simp: 'ꦖ', mk: 'ꦖ', trad: 'ꦖ', uni: 'U+A996', ipa: '/tʃʰ/', jgst: 'c̣a', hana: 3.1, warga: 8 },
+            { cat: 'Murda', id: 'R_M', lat: 'R', kbj: '-', simp: 'ꦬ', mk: 'ꦬ', trad: 'ꦬ', uni: 'U+A9AC', ipa: '/r/', jgst: 'ṟa', hana: 4.1, warga: 18.1 },
+            { cat: 'Murda', id: 'DH_M', lat: 'DH', kbj: '-', simp: 'ꦝ', mk: 'ꦞ', trad: 'ꦞ', uni: 'U+A99D / U+A99E', ipa: '/ɖʱ/', jgst: 'ḍha', hana: 12.1, warga: 16 },
 
             // MAHAPRANA & VARIAN
-            { cat: 'Mahaprana & Varian', id: 'kh', lat: 'kh', kbj: 'ꦏ꦳', simp: 'ꦏ꦳', mk: 'ꦑ', trad: 'ꦏ꦳', uni: 'K: U+A98F+A9B3 | W: U+A990', ipa: 'KBJ: /x/ | Kawi: /kʰ/', hana: 21, warga: 2.1 },
-            { cat: 'Mahaprana & Varian', id: 'gh', lat: 'gh', kbj: 'ꦒ꦳', simp: 'ꦒ꦳', mk: 'ꦓ', trad: 'ꦒ꦳', uni: 'K: U+A992+A9B3 | W: U+A993', ipa: 'KBJ: /ɣ/ | Kawi: /gʱ/', hana: 22, warga: 4.1 },
-            { cat: 'Mahaprana & Varian', id: 'ch', lat: 'ch', kbj: '-', simp: '-', mk: 'ꦖ', trad: 'ꦖ', uni: 'U+A996', ipa: '/tʃʰ/', hana: 23, warga: 8 },
-            { cat: 'Mahaprana & Varian', id: 'thh', lat: 'Th / thh', kbj: '-', simp: '-', mk: 'ꦜ', trad: 'ꦜ', uni: 'U+A99C', ipa: '/ʈʰ/', hana: 25, warga: 14 },
-            { cat: 'Mahaprana & Varian', id: 'dhh', lat: 'Dh / dhh', kbj: '-', simp: '-', mk: 'ꦞ', trad: 'ꦞ', uni: 'U+A99E', ipa: '/ɖʱ/', hana: 26, warga: 16 },
-            { cat: 'Mahaprana & Varian', id: 'ddh', lat: 'dH', kbj: '-', simp: '-', mk: 'ꦣ', trad: 'ꦣ', uni: 'U+A9A3', ipa: '/dʱ/', hana: 28, warga: 23 },
-            { cat: 'Mahaprana & Varian', id: 'sy', lat: 'sy / ś', kbj: 'ꦯ', simp: 'ꦯ', mk: 'ꦯ', trad: 'ꦯ', uni: 'U+A9AF', ipa: '/ʃ/', hana: 31, warga: 12.6 },
-            { cat: 'Mahaprana & Varian', id: 'sh', lat: 'sh / ṣ', kbj: 'ꦰ', simp: 'ꦰ', mk: 'ꦰ', trad: 'ꦰ', uni: 'U+A9B0', ipa: '/ʂ/', hana: 32, warga: 19 },
+            { cat: 'Mahaprana & Varian', id: 'kh', lat: 'kh', kbj: 'ꦏ꦳', simp: 'ꦏ꦳', mk: 'ꦑ', trad: 'ꦏ꦳', uni: 'K: U+A98F+A9B3 | W: U+A990', ipa: 'KBJ: /x/ | Kawi: /kʰ/', jgst: 'xa / qa', hana: 21, warga: 2.1 },
+            { cat: 'Mahaprana & Varian', id: 'gh', lat: 'gh', kbj: 'ꦒ꦳', simp: 'ꦒ꦳', mk: 'ꦓ', trad: 'ꦒ꦳', uni: 'K: U+A992+A9B3 | W: U+A993', ipa: 'KBJ: /ɣ/ | Kawi: /gʱ/', jgst: 'g̣a', hana: 22, warga: 4.1 },
+            { cat: 'Mahaprana & Varian', id: 'ch', lat: 'ch', kbj: '-', simp: '-', mk: 'ꦖ', trad: 'ꦖ', uni: 'U+A996', ipa: '/tʃʰ/', jgst: 'c̣a', hana: 23, warga: 8 },
+            { cat: 'Mahaprana & Varian', id: 'thh', lat: 'Th / thh', kbj: '-', simp: '-', mk: 'ꦜ', trad: 'ꦜ', uni: 'U+A99C', ipa: '/ʈʰ/', jgst: 'ṭha', hana: 25, warga: 14 },
+            { cat: 'Mahaprana & Varian', id: 'dhh', lat: 'Dh / dhh', kbj: '-', simp: '-', mk: 'ꦞ', trad: 'ꦞ', uni: 'U+A99E', ipa: '/ɖʱ/', jgst: 'ḍha', hana: 26, warga: 16 },
+            { cat: 'Mahaprana & Varian', id: 'ddh', lat: 'dH', kbj: '-', simp: '-', mk: 'ꦣ', trad: 'ꦣ', uni: 'U+A9A3', ipa: '/dʱ/', jgst: 'dha', hana: 28, warga: 23 },
+            { cat: 'Mahaprana & Varian', id: 'sy', lat: 'sy / ś', kbj: 'ꦯ', simp: 'ꦯ', mk: 'ꦯ', trad: 'ꦯ', uni: 'U+A9AF', ipa: '/ʃ/', jgst: 'śa', hana: 31, warga: 12.6 },
+            { cat: 'Mahaprana & Varian', id: 'sh', lat: 'sh / ṣ', kbj: 'ꦰ', simp: 'ꦰ', mk: 'ꦰ', trad: 'ꦰ', uni: 'U+A9B0', ipa: '/ʂ/', jgst: 'ṣa', hana: 32, warga: 19 },
 
             // AKSARA REKAN (Arab & Asing Lainnya)
-            { cat: 'Rekan', id: 'f', lat: 'f', kbj: 'ꦥ꦳', simp: 'ꦥ꦳', mk: '-', trad: 'ꦥ꦳', uni: 'U+A9A5+A9B3', ipa: '/f/', hana: 33, warga: 33 },
-            { cat: 'Rekan', id: 'v', lat: 'v', kbj: 'ꦮ꦳', simp: 'ꦮ꦳', mk: '-', trad: 'ꦮ꦳', uni: 'U+A9AE+A9B3', ipa: '/v/', hana: 34, warga: 34 },
-            { cat: 'Rekan', id: 'z', lat: 'z', kbj: 'ꦗ꦳', simp: 'ꦗ꦳', mk: '-', trad: 'ꦗ꦳', uni: 'U+A997+A9B3', ipa: '/z/', hana: 35, warga: 35 },
-            { cat: 'Rekan', id: 'dz', lat: 'dz', kbj: 'ꦢ꦳', simp: 'ꦢ꦳', mk: '-', trad: 'ꦢ꦳', uni: 'U+A9A2+A9B3', ipa: '/dz/', hana: 36, warga: 36 },
-            { cat: 'Rekan', id: 'q', lat: 'q', kbj: '-', simp: 'ꦐ', mk: '-', trad: 'ꦐ', uni: 'U+A990', ipa: '/q/ (ق)', hana: 37.1, warga: 37.1 },
-            { cat: 'Rekan', id: 'hh', lat: 'hh', kbj: '-', simp: 'ꦲ꦳', mk: '-', trad: 'ꦲ꦳', uni: 'U+A9B2+A9B3', ipa: '/ħ/ (ح)', hana: 37.2, warga: 37.2 },
-            { cat: 'Rekan', id: 'xng', lat: 'xng', kbj: '-', simp: 'ꦔ꦳', mk: '-', trad: 'ꦔ꦳', uni: 'U+A994+A9B3', ipa: '/ʕ/ (ع)', hana: 37.3, warga: 37.3 },
-            { cat: 'Rekan', id: 'ts', lat: 'ts', kbj: '-', simp: 'ꦱ꦳', mk: '-', trad: 'ꦱ꦳', uni: 'U+A9B1+A9B3', ipa: '/θ/ (ث)', hana: 37.4, warga: 37.4 },
-            { cat: 'Rekan', id: 'shh', lat: 'shh', kbj: '-', simp: 'ꦰ꦳', mk: '-', trad: 'ꦰ꦳', uni: 'U+A9B0+A9B3', ipa: '/sˤ/ (ص)', hana: 37.5, warga: 37.5 },
-            { cat: 'Rekan', id: 'xsy', lat: 'xsy', kbj: '-', simp: 'ꦯ꦳', mk: '-', trad: 'ꦯ꦳', uni: 'U+A9AF+A9B3', ipa: '/ʃ/ (ش)', hana: 37.6, warga: 37.6 },
-            { cat: 'Rekan', id: 'dl', lat: 'dl', kbj: '-', simp: 'ꦭ꦳', mk: '-', trad: 'ꦭ꦳', uni: 'U+A9AD+A9B3', ipa: '/dˤ/ (ض)', hana: 37.7, warga: 37.7 },
-            { cat: 'Rekan', id: 'tth', lat: 'tth', kbj: '-', simp: 'ꦡ꦳', mk: '-', trad: 'ꦡ꦳', uni: 'U+A9A1+A9B3', ipa: '/tˤ/ (ط)', hana: 37.8, warga: 37.8 },
-            { cat: 'Rekan', id: 'zh', lat: 'zh', kbj: '-', simp: 'ꦣ꦳', mk: '-', trad: 'ꦣ꦳', uni: 'U+A9A3+A9B3', ipa: '/ðˤ/ (ظ)', hana: 37.9, warga: 37.9 },
-            { cat: 'Rekan', id: 'x', lat: 'x', kbj: '-', simp: 'ꦑ꦳', mk: '-', trad: 'ꦑ꦳', uni: 'U+A990+A9B3', ipa: '/x/ (خ)', hana: 37.10, warga: 37.10 },
+            { cat: 'Rekan', id: 'f', lat: 'f', kbj: 'ꦥ꦳', simp: 'ꦥ꦳', mk: '-', trad: 'ꦥ꦳', uni: 'U+A9A5+A9B3', ipa: '/f/', jgst: 'fa', hana: 33, warga: 33 },
+            { cat: 'Rekan', id: 'v', lat: 'v', kbj: 'ꦮ꦳', simp: 'ꦮ꦳', mk: '-', trad: 'ꦮ꦳', uni: 'U+A9AE+A9B3', ipa: '/v/', jgst: 'va', hana: 34, warga: 34 },
+            { cat: 'Rekan', id: 'z', lat: 'z', kbj: 'ꦗ꦳', simp: 'ꦗ꦳', mk: '-', trad: 'ꦗ꦳', uni: 'U+A997+A9B3', ipa: '/z/', jgst: 'za', hana: 35, warga: 35 },
+            { cat: 'Rekan', id: 'dz', lat: 'dz', kbj: 'ꦢ꦳', simp: 'ꦢ꦳', mk: '-', trad: 'ꦢ꦳', uni: 'U+A9A2+A9B3', ipa: '/dz/', jgst: 'dza', hana: 36, warga: 36 },
+            { cat: 'Rekan', id: 'q', lat: 'q', kbj: '-', simp: 'ꦐ', mk: '-', trad: 'ꦐ', uni: 'U+A990', ipa: '/q/ (ق)', jgst: 'qa', hana: 37.1, warga: 37.1 },
+            { cat: 'Rekan', id: 'hh', lat: 'hh', kbj: '-', simp: 'ꦲ꦳', mk: '-', trad: 'ꦲ꦳', uni: 'U+A9B2+A9B3', ipa: '/ħ/ (ح)', jgst: 'ḥa', hana: 37.2, warga: 37.2 },
+            { cat: 'Rekan', id: 'xng', lat: 'xng', kbj: '-', simp: 'ꦔ꦳', mk: '-', trad: 'ꦔ꦳', uni: 'U+A994+A9B3', ipa: '/ʕ/ (ع)', jgst: '‘a', hana: 37.3, warga: 37.3 },
+            { cat: 'Rekan', id: 'ts', lat: 'ts', kbj: '-', simp: 'ꦱ꦳', mk: '-', trad: 'ꦱ꦳', uni: 'U+A9B1+A9B3', ipa: '/θ/ (ث)', jgst: 'ṡa', hana: 37.4, warga: 37.4 },
+            { cat: 'Rekan', id: 'shh', lat: 'shh', kbj: '-', simp: 'ꦰ꦳', mk: '-', trad: 'ꦰ꦳', uni: 'U+A9B0+A9B3', ipa: '/sˤ/ (ص)', jgst: 'ṣa', hana: 37.5, warga: 37.5 },
+            { cat: 'Rekan', id: 'xsy', lat: 'xsy', kbj: '-', simp: 'ꦯ꦳', mk: '-', trad: 'ꦯ꦳', uni: 'U+A9AF+A9B3', ipa: '/ʃ/ (ش)', jgst: 'śa', hana: 37.6, warga: 37.6 },
+            { cat: 'Rekan', id: 'dl', lat: 'dl', kbj: '-', simp: 'ꦭ꦳', mk: '-', trad: 'ꦭ꦳', uni: 'U+A9AD+A9B3', ipa: '/dˤ/ (ض)', jgst: 'ḍa', hana: 37.7, warga: 37.7 },
+            { cat: 'Rekan', id: 'tth', lat: 'tth', kbj: '-', simp: 'ꦡ꦳', mk: '-', trad: 'ꦡ꦳', uni: 'U+A9A1+A9B3', ipa: '/tˤ/ (ط)', jgst: 'ṭa', hana: 37.8, warga: 37.8 },
+            { cat: 'Rekan', id: 'zh', lat: 'zh', kbj: '-', simp: 'ꦣ꦳', mk: '-', trad: 'ꦣ꦳', uni: 'U+A9A3+A9B3', ipa: '/ðˤ/ (ظ)', jgst: 'ẓa', hana: 37.9, warga: 37.9 },
+            { cat: 'Rekan', id: 'x', lat: 'x', kbj: '-', simp: 'ꦑ꦳', mk: '-', trad: 'ꦑ꦳', uni: 'U+A990+A9B3', ipa: '/x/ (خ)', jgst: 'xa', hana: 37.10, warga: 37.10 },
 
             // AKSARA SWARA (Vokal Pendek & Panjang / Dirgha)
-            { cat: 'Swara', id: 'A_S', lat: 'A', kbj: 'ꦄ', simp: 'ꦄ', mk: 'ꦄ', trad: 'ꦄ', uni: 'U+A984', ipa: '/a/', hana: 40, warga: 40 },
-            { cat: 'Swara', id: 'AA_S', lat: 'AA', kbj: '-', simp: '-', mk: 'ꦄꦴ', trad: 'ꦄꦴ', uni: 'U+A984 U+A9B4', ipa: '/aː/', hana: 40.1, warga: 40.1 },
-            { cat: 'Swara', id: 'I_S', lat: 'I', kbj: 'ꦆ', simp: 'ꦆ', mk: 'ꦆ', trad: 'ꦆ', uni: 'U+A986', ipa: '/i/', hana: 41, warga: 41 },
-            { cat: 'Swara', id: 'II_S', lat: 'II', kbj: '-', simp: '-', mk: 'ꦇ', trad: 'ꦇ', uni: 'U+A987', ipa: '/iː/', hana: 41.1, warga: 41.1 },
-            { cat: 'Swara', id: 'Ix_S', lat: 'Ix / ix', kbj: '-', simp: '-', mk: 'ꦅ', trad: 'ꦅ', uni: 'U+A985', ipa: '/i/', hana: 41.2, warga: 41.2 },
-            { cat: 'Swara', id: 'U_S', lat: 'U', kbj: 'ꦈ', simp: 'ꦈ', mk: 'ꦈ', trad: 'ꦈ', uni: 'U+A988', ipa: '/u/', hana: 42, warga: 42 },
-            { cat: 'Swara', id: 'UU_S', lat: 'UU', kbj: '-', simp: '-', mk: 'ꦈꦴ', trad: 'ꦈꦴ', uni: 'U+A988 U+A9B4', ipa: '/uː/', hana: 42.1, warga: 42.1 },
-            { cat: 'Swara', id: 'E_S', lat: 'E (Pepet)', kbj: 'ꦄꦼ', simp: 'ꦄꦼ', mk: 'ꦄꦼ', trad: 'ꦄꦼ', uni: 'U+A984 U+A9BC', ipa: '/ə/', hana: 43, warga: 43 },
-            { cat: 'Swara', id: 'E_T', lat: 'É / È (Taling)', kbj: 'ꦌ', simp: 'ꦌ', mk: 'ꦌ', trad: 'ꦌ', uni: 'U+A98C', ipa: '/e/ atau /ɛ/', hana: 43.1, warga: 43.1 },
-            { cat: 'Swara', id: 'O_S', lat: 'O', kbj: 'ꦎ', simp: 'ꦎ', mk: 'ꦎ', trad: 'ꦎ', uni: 'U+A98E', ipa: '/o/', hana: 44, warga: 44 },
-            { cat: 'Swara', id: 'AI_S', lat: 'AI', kbj: '-', simp: '-', mk: 'ꦍ', trad: 'ꦍ', uni: 'U+A98D', ipa: '/aɪ/', hana: 45, warga: 45 },
-            { cat: 'Swara', id: 'AU_S', lat: 'AU', kbj: '-', simp: '-', mk: 'ꦎꦴ', trad: 'ꦎꦴ', uni: 'U+A98E U+A9B4', ipa: '/aʊ/', hana: 46, warga: 46 },
-            { cat: 'Swara', id: 'RE_S', lat: 'RE (Pa Cerek)', kbj: 'ꦉ', simp: 'ꦉ', mk: 'ꦉ', trad: 'ꦉ', uni: 'U+A989', ipa: '/rə/', hana: 47, warga: 47 },
-            { cat: 'Swara', id: 'REE_S', lat: 'REE', kbj: '-', simp: '-', mk: 'ꦉꦴ', trad: 'ꦉꦴ', uni: 'U+A989 U+A9B4', ipa: '/rəː/', hana: 47.1, warga: 47.1 },
-            { cat: 'Swara', id: 'LE_S', lat: 'LE (Nga Lelet)', kbj: 'ꦊ', simp: 'ꦊ', mk: 'ꦊ', trad: 'ꦊ', uni: 'U+A98A', ipa: '/lə/', hana: 48, warga: 48 },
-            { cat: 'Swara', id: 'LEE_S', lat: 'LEE', kbj: '-', simp: '-', mk: 'ꦋ', trad: 'ꦋ', uni: 'U+A98B', ipa: '/ləː/', hana: 48.1, warga: 48.1 }
+            { cat: 'Swara', id: 'A_S', lat: 'A', kbj: 'ꦄ', simp: 'ꦄ', mk: 'ꦄ', trad: 'ꦄ', uni: 'U+A984', ipa: '/a/', jgst: 'a', hana: 40, warga: 40 },
+            { cat: 'Swara', id: 'AA_S', lat: 'AA', kbj: '-', simp: '-', mk: 'ꦄꦴ', trad: 'ꦄꦴ', uni: 'U+A984 U+A9B4', ipa: '/aː/', jgst: 'ā', hana: 40.1, warga: 40.1 },
+            { cat: 'Swara', id: 'I_S', lat: 'I', kbj: 'ꦆ', simp: 'ꦆ', mk: 'ꦆ', trad: 'ꦆ', uni: 'U+A986', ipa: '/i/', jgst: 'i', hana: 41, warga: 41 },
+            { cat: 'Swara', id: 'II_S', lat: 'II', kbj: '-', simp: '-', mk: 'ꦇ', trad: 'ꦇ', uni: 'U+A987', ipa: '/iː/', jgst: 'ī', hana: 41.1, warga: 41.1 },
+            { cat: 'Swara', id: 'Ix_S', lat: 'Ix / ix', kbj: '-', simp: '-', mk: 'ꦅ', trad: 'ꦅ', uni: 'U+A985', ipa: '/i/', jgst: 'i', hana: 41.2, warga: 41.2 },
+            { cat: 'Swara', id: 'U_S', lat: 'U', kbj: 'ꦈ', simp: 'ꦈ', mk: 'ꦈ', trad: 'ꦈ', uni: 'U+A988', ipa: '/u/', jgst: 'u', hana: 42, warga: 42 },
+            { cat: 'Swara', id: 'UU_S', lat: 'UU', kbj: '-', simp: '-', mk: 'ꦈꦴ', trad: 'ꦈꦴ', uni: 'U+A988 U+A9B4', ipa: '/uː/', jgst: 'ū', hana: 42.1, warga: 42.1 },
+            { cat: 'Swara', id: 'E_S', lat: 'E (Pepet)', kbj: 'ꦄꦼ', simp: 'ꦄꦼ', mk: 'ꦄꦼ', trad: 'ꦄꦼ', uni: 'U+A984 U+A9BC', ipa: '/ə/', jgst: 'ě', hana: 43, warga: 43 },
+            { cat: 'Swara', id: 'E_T', lat: 'É / È (Taling)', kbj: 'ꦌ', simp: 'ꦌ', mk: 'ꦌ', trad: 'ꦌ', uni: 'U+A98C', ipa: '/e/ atau /ɛ/', jgst: 'é', hana: 43.1, warga: 43.1 },
+            { cat: 'Swara', id: 'O_S', lat: 'O', kbj: 'ꦎ', simp: 'ꦎ', mk: 'ꦎ', trad: 'ꦎ', uni: 'U+A98E', ipa: '/o/', jgst: 'o', hana: 44, warga: 44 },
+            { cat: 'Swara', id: 'AI_S', lat: 'AI', kbj: '-', simp: '-', mk: 'ꦍ', trad: 'ꦍ', uni: 'U+A98D', ipa: '/aɪ/', jgst: 'ꜽ', hana: 45, warga: 45 },
+            { cat: 'Swara', id: 'AU_S', lat: 'AU', kbj: '-', simp: '-', mk: 'ꦎꦴ', trad: 'ꦎꦴ', uni: 'U+A98E U+A9B4', ipa: '/aʊ/', jgst: 'ꜷ', hana: 46, warga: 46 },
+            { cat: 'Swara', id: 'RE_S', lat: 'RE (Pa Cerek)', kbj: 'ꦉ', simp: 'ꦉ', mk: 'ꦉ', trad: 'ꦉ', uni: 'U+A989', ipa: '/rə/', jgst: 'ṛ', hana: 47, warga: 47 },
+            { cat: 'Swara', id: 'REE_S', lat: 'REE', kbj: '-', simp: '-', mk: 'ꦉꦴ', trad: 'ꦉꦴ', uni: 'U+A989 U+A9B4', ipa: '/rəː/', jgst: 'ṛě', hana: 47.1, warga: 47.1 },
+            { cat: 'Swara', id: 'LE_S', lat: 'LE (Nga Lelet)', kbj: 'ꦊ', simp: 'ꦊ', mk: 'ꦊ', trad: 'ꦊ', uni: 'U+A98A', ipa: '/lə/', jgst: 'ḷ', hana: 48, warga: 48 },
+            { cat: 'Swara', id: 'LEE_S', lat: 'LEE', kbj: '-', simp: '-', mk: 'ꦋ', trad: 'ꦋ', uni: 'U+A98B', ipa: '/ləː/', jgst: 'ḷö', hana: 48.1, warga: 48.1 }
         ];
 
         function formatVal(val) {
@@ -157,7 +159,7 @@
                 if (mode === 'kategori' && item.cat !== currentCat) {
                     currentCat = item.cat;
                     const catRow = document.createElement('tr');
-                    catRow.innerHTML = `<td colspan="7" class="section-row">--- ${currentCat.toUpperCase()} ---</td>`;
+                    catRow.innerHTML = `<td colspan="8" class="section-row">--- ${currentCat.toUpperCase()} ---</td>`;
                     tbody.appendChild(catRow);
                 }
 
@@ -170,12 +172,12 @@
                     <td class="aksara">${formatVal(item.trad)}</td>
                     <td><span class="code">${item.uni}</span></td>
                     <td>${item.ipa}</td>
+                    <td class="jgst">${item.jgst}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // Inisialisasi awal
         renderTable();
     </script>
 </body>
