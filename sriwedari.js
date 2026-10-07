@@ -1,4 +1,3 @@
-// DH Legena menggunakan Da Mahaprana U+A9A3 (ꦣ)
 const KAMUS_AKSARA = {
     'h':'ꦲ', 'n':'ꦤ', 'c':'ꦕ', 'r':'ꦫ', 'k':'ꦏ',
     'd':'ꦢ', 't':'ꦠ', 's':'ꦱ', 'w':'ꦮ', 'l':'ꦭ',
@@ -10,14 +9,13 @@ const KAMUS_AKSARA = {
     'kx':'ꦏ', 'rx':'ꦫ', 'hx':'ꦲ', 'ngx':'ꦔ'
 };
 
-// Pasangan DH MUTLAK menggunakan Da Murda U+A99D (꧀ꦝ)
 const AKSARA_MURDA = {
     'n':'ꦟ', 'k':'ꦑ', 't':'ꦡ', 's':'ꦯ', 'p':'ꦦ',
     'g':'ꦓ', 'b':'ꦨ', 'c':'ꦖ', 'ny':'ꦘ', 'j':'ꦙ', 'dh':'ꦝ'
 };
 
 const SWARA_MAP = {
-    'A':'ꦄ', 'I':'ꦆ', 'U':'ꦈ', 'E':'ꦌ', 'É':'ꦌ', 'È':'ꦌ', 'Ê':'ꦌ', 'O':'ꦎ'
+    'A':'ꦄ', 'I':'ꦆ', 'U':'ꦈ', 'E':'ꦄꦼ', 'É':'ꦌ', 'È':'ꦌ', 'Ê':'ꦄꦼ', 'O':'ꦎ'
 };
 
 const ANGKA = ['꧐','꧑','꧒','꧓','꧔','꧕','꧖','꧗','꧘','꧙'];
@@ -101,7 +99,6 @@ function updateParamFromManualInput() {
     document.getElementById('outParamJawa').innerText = transliterasiKalimat(val);
 }
 
-/* --- FUNGSI DWIPURWA --- */
 function prosesDwipurwa() {
     let dasarRaw = document.getElementById('inDwipurwa').value.trim();
     let dasar = dasarRaw.replace(/e'/g, 'é').replace(/E'/g, 'É').toLowerCase();
@@ -165,7 +162,6 @@ function updateDwipurwaFromManualInput() {
     document.getElementById('outDwipurwaJawa').innerText = transliterasiKalimat(val);
 }
 
-/* --- FUNGSI PARAMASASTRA (MORFOLOGI PAUGERAN SRIWEDARI) --- */
 function prosesParamasastra() {
     let ater = document.getElementById('selAter').value;
     let dasarRaw = document.getElementById('inDasar').value.trim();
@@ -433,7 +429,6 @@ function prosesParamasastra() {
     document.getElementById('outParamJawa').innerText = transliterasiKalimat(resultLatin);
 }
 
-/* --- ENGINE TRANSLITERASI UTAMA --- */
 function prosesTransliterasi() {
     let teksInput = document.getElementById('inputLatin').value;
     let hasil = transliterasiKalimat(teksInput);
@@ -443,7 +438,6 @@ function prosesTransliterasi() {
 function transliterasiKalimat(teks) {
     let teksDiolah = teks.replace(/e'/g, 'é').replace(/E'/g, 'É');
 
-    // ATURAN ANUSWARA + KATA DASAR BERAWALAN G (ngg- -> hangg-)
     teksDiolah = teksDiolah.replace(/\bngg/gi, function(match) {
         return (match[0] === 'N' || match[0] === 'H') ? 'Hangg' : 'hangg';
     });
@@ -462,14 +456,11 @@ function transliterasiKalimat(teks) {
         lineJoined = lineJoined.replace(/꧀ꦊ/g, '꧀ꦭꦼ');
         lineJoined = lineJoined.replace(/꧀([ꦄꦆꦈꦌꦎ]|[ꦏꦢꦒꦗ]꦳)/g, '꧀\u200C$1');
 
-        // ATURAN BAKU: Pencegahan Tumpuk Tiga (Pasangan Ganda Antarkata)
         lineJoined = lineJoined.replace(/([ꦀ-꧟])꧀([ꦀ-꧟])(꦳?)꧀([ꦀ-꧟])/g, function(match, p1, p2, p3, p4) {
             if (p2 === 'ꦥ' || p2 === 'ꦱ') return match; 
             return p1 + '꧀\u200C' + p2 + p3 + '꧀' + p4; 
         });
 
-        // INTEGRASI MUTLAK PAUGERAN SRIWEDARI:
-        // Memastikan secara global bahwa SETIAP pasangan Da Mahaprana (꧀ꦣ) DIPAKSA berubah menjadi Pasangan Da Murda (꧀ꦝ)
         lineJoined = lineJoined.replace(/꧀ꦣ/g, '꧀ꦝ');
 
         return lineJoined;
