@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonisasi Tata Tulis Aksara Jawa</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f8f9fa; color: #333; }
+        h1 { font-size: 1.5rem; border-bottom: 2px solid #0056b3; padding-bottom: 10px; }
+        .controls { margin: 20px 0; display: flex; gap: 15px; align-items: center; }
+        select { padding: 8px 12px; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc; }
+        table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #0056b3; color: #fff; font-weight: bold; }
+        tr:hover { background-color: #f1f1f1; }
+        .aksara { font-family: 'Noto Sans Javanese', sans-serif; font-size: 1.5rem; color: #0056b3; }
+        .code { font-family: monospace; background: #e9ecef; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem;}
+    </style>
+</head>
+<body>
+
+    <h1>Panduan Pengetikan: Sriwedari, KBJ, & Mardi Kawi</h1>
+    <div class="controls">
+        <label for="sortOrder"><strong>Pilih Urutan Penampilan:</strong></label>
+        <select id="sortOrder" onchange="renderTable()">
+            <option value="alphabet">Alfabet (A-Z)</option>
+            <option value="hanacaraka">Hanacaraka (Sriwedari / KBJ)</option>
+            <option value="kawi">Warga Aksara / KaKhaGaGhaNga (Kawi)</option>
+        </select>
+    </div>
+
+    <table id="mappingTable">
+        <thead>
+            <tr>
+                <th>Input Latin</th>
+                <th>Sriwedari / KBJ</th>
+                <th>Mardi Kawi</th>
+                <th>Unicode</th>
+                <th>Pelafalan (IPA)</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Data dirender melalui JS -->
+        </tbody>
+    </table>
+
+    <script>
+        // Database Utama Aksara
+        const aksaraData = [
+            { id: 'h', lat: 'h', kbj: 'ꦲ', kawi: 'ꦲ', uni: 'U+A9B2', ipa: '/h/ atau /a/', hana: 1, warga: 6 },
+            { id: 'n', lat: 'n', kbj: 'ꦤ', kawi: 'ꦤ', uni: 'U+A9A4', ipa: '/n/', hana: 2, warga: 24 },
+            { id: 'c', lat: 'c', kbj: 'ꦕ', kawi: 'ꦕ', uni: 'U+A995', ipa: '/tʃ/', hana: 3, warga: 7 },
+            { id: 'r', lat: 'r', kbj: 'ꦫ', kawi: 'ꦫ', uni: 'U+A9AB', ipa: '/r/', hana: 4, warga: 18 },
+            { id: 'k', lat: 'k', kbj: 'ꦏ', kawi: 'ꦏ', uni: 'U+A98F', ipa: '/k/', hana: 5, warga: 1 },
+            { id: 'd', lat: 'd', kbj: 'ꦢ', kawi: 'ꦢ', uni: 'U+A9A2', ipa: '/d/', hana: 6, warga: 22 },
+            { id: 't', lat: 't', kbj: 'ꦠ', kawi: 'ꦠ', uni: 'U+A9A0', ipa: '/t/', hana: 7, warga: 20 },
+            { id: 's', lat: 's', kbj: 'ꦱ', kawi: 'ꦱ', uni: 'U+A9B1', ipa: '/s/', hana: 8, warga: 26 },
+            { id: 'w', lat: 'w', kbj: 'ꦮ', kawi: 'ꦮ', uni: 'U+A9AE', ipa: '/w/', hana: 9, warga: 32 },
+            { id: 'l', lat: 'l', kbj: 'ꦭ', kawi: 'ꦭ', uni: 'U+A9AD', ipa: '/l/', hana: 10, warga: 25 },
+            { id: 'p', lat: 'p', kbj: 'ꦥ', kawi: 'ꦥ', uni: 'U+A9A5', ipa: '/p/', hana: 11, warga: 27 },
+            { id: 'dh', lat: 'dh', kbj: 'ꦣ', kawi: 'ꦝ', uni: 'K: U+A9A3 | W: U+A99D', ipa: '/ɖ/', hana: 12, warga: 15 },
+            { id: 'j', lat: 'j', kbj: 'ꦗ', kawi: 'ꦗ', uni: 'U+A997', ipa: '/dʒ/', hana: 13, warga: 9 },
+            { id: 'y', lat: 'y', kbj: 'ꦪ', kawi: 'ꦪ', uni: 'U+A9AA', ipa: '/j/', hana: 14, warga: 12 },
+            { id: 'ny', lat: 'ny', kbj: 'ꦚ', kawi: 'ꦚ', uni: 'U+A99A', ipa: '/ɲ/', hana: 15, warga: 11 },
+            { id: 'm', lat: 'm', kbj: 'ꦩ', kawi: 'ꦩ', uni: 'U+A9A9', ipa: '/m/', hana: 16, warga: 31 },
+            { id: 'g', lat: 'g', kbj: 'ꦒ', kawi: 'ꦒ', uni: 'U+A992', ipa: '/g/', hana: 17, warga: 3 },
+            { id: 'b', lat: 'b', kbj: 'ꦧ', kawi: 'ꦧ', uni: 'U+A9A7', ipa: '/b/', hana: 18, warga: 29 },
+            { id: 'th', lat: 'th', kbj: 'ꦛ', kawi: 'ꦛ', uni: 'U+A99B', ipa: '/ʈ/', hana: 19, warga: 13 },
+            { id: 'ng', lat: 'ng', kbj: 'ꦔ', kawi: 'ꦔ', uni: 'U+A994', ipa: '/ŋ/', hana: 20, warga: 5 },
+            
+            // Mahaprana & Varian
+            { id: 'kh', lat: 'kh', kbj: 'ꦏ꦳', kawi: 'ꦑ', uni: 'K: U+A98F+A9B3 | W: U+A990', ipa: 'KBJ: /x/ | Kawi: /kʰ/', hana: 21, warga: 2 },
+            { id: 'gh', lat: 'gh', kbj: 'ꦒ꦳', kawi: 'ꦓ', uni: 'K: U+A992+A9B3 | W: U+A993', ipa: 'KBJ: /ɣ/ | Kawi: /gʱ/', hana: 22, warga: 4 },
+            { id: 'ch', lat: 'ch', kbj: '-', kawi: 'ꦖ', uni: 'U+A996', ipa: '/tʃʰ/', hana: 23, warga: 8 },
+            { id: 'jh', lat: 'jh', kbj: '-', kawi: 'ꦙ', uni: 'U+A998', ipa: '/dʒʱ/', hana: 24, warga: 10 },
+            { id: 'thh', lat: 'thh / T', kbj: '-', kawi: 'ꦜ', uni: 'U+A99C', ipa: '/ʈʰ/', hana: 25, warga: 14 },
+            { id: 'dhh', lat: 'dhh / D', kbj: '-', kawi: 'ꦞ', uni: 'U+A99E', ipa: '/ɖʱ/', hana: 26, warga: 16 },
+            { id: 'tth', lat: 'tth', kbj: '-', kawi: 'ꦡ', uni: 'U+A9A1', ipa: '/tʰ/', hana: 27, warga: 21 },
+            { id: 'ddh', lat: 'ddh', kbj: '-', kawi: 'ꦣ', uni: 'U+A9A3', ipa: '/dʱ/', hana: 28, warga: 23 },
+            { id: 'ph', lat: 'ph', kbj: '-', kawi: 'ꦦ', uni: 'U+A9A6', ipa: '/pʰ/', hana: 29, warga: 28 },
+            { id: 'bh', lat: 'bh', kbj: '-', kawi: 'ꦨ', uni: 'U+A9A8', ipa: '/bʱ/', hana: 30, warga: 30 },
+            
+            // Varian S dan Rekan
+            { id: 'sy', lat: 'sy / ś', kbj: 'ꦯ', kawi: 'ꦯ', uni: 'U+A9AF', ipa: '/ʃ/', hana: 31, warga: 12.5 },
+            { id: 'sh', lat: 'sh / ṣ', kbj: 'ꦰ', kawi: 'ꦰ', uni: 'U+A9B0', ipa: '/ʂ/', hana: 32, warga: 19 },
+            { id: 'f', lat: 'f', kbj: 'ꦥ꦳', kawi: 'ꦥ', uni: 'K: U+A9A5+A9B3 | W: U+A9A5', ipa: '/f/', hana: 33, warga: 33 },
+            { id: 'v', lat: 'v', kbj: 'ꦮ꦳', kawi: 'ꦮ', uni: 'K: U+A9AE+A9B3 | W: U+A9AE', ipa: '/v/', hana: 34, warga: 34 },
+            { id: 'z', lat: 'z', kbj: 'ꦗ꦳', kawi: 'ꦗ', uni: 'K: U+A997+A9B3 | W: U+A997', ipa: '/z/', hana: 35, warga: 35 },
+            { id: 'dz', lat: 'dz', kbj: 'ꦢ꦳', kawi: 'ꦢ', uni: 'K: U+A9A2+A9B3 | W: U+A9A2', ipa: '/dz/', hana: 36, warga: 36 }
+        ];
+
+        function renderTable() {
+            const mode = document.getElementById('sortOrder').value;
+            let sortedData = [...aksaraData];
+
+            if (mode === 'alphabet') {
+                sortedData.sort((a, b) => a.lat.localeCompare(b.lat));
+            } else if (mode === 'hanacaraka') {
+                sortedData.sort((a, b) => a.hana - b.hana);
+            } else if (mode === 'kawi') {
+                sortedData.sort((a, b) => a.warga - b.warga);
+            }
+
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            sortedData.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span class="code">${item.lat}</span></td>
+                    <td class="aksara">${item.kbj}</td>
+                    <td class="aksara">${item.kawi}</td>
+                    <td><span class="code">${item.uni}</span></td>
+                    <td>${item.ipa}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Inisialisasi awal
+        renderTable();
+    </script>
+</body>
+</html>
