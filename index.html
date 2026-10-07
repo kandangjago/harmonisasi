@@ -20,11 +20,11 @@
 </head>
 <body>
 
-    <h1>Panduan Pengetikan: Sriwedari, KBJ, & Mardi Kawi</h1>
+    <h1>Panduan Pengetikan: Harmonisasi Tata Tulis Aksara Jawa</h1>
     <div class="controls">
         <label for="sortOrder"><strong>Pilih Kategori / Urutan:</strong></label>
         <select id="sortOrder" onchange="renderTable()">
-            <option value="kategori">Berdasarkan Kategori (Wyanjana, Murda, Swara)</option>
+            <option value="kategori">Berdasarkan Kategori (Wyanjana, Murda, Swara, Rekan)</option>
             <option value="alphabet">Alfabet Latin (A-Z)</option>
             <option value="hanacaraka">Urutan Hanacaraka</option>
             <option value="kawi">Warga Aksara (KaKhaGaGhaNga)</option>
@@ -35,10 +35,10 @@
         <thead>
             <tr>
                 <th>Input Latin</th>
-                <th>Sriwedari / KBJ</th>
-                <th>Mardi Kawi</th>
+                <th>Sriwedari / KBJ (Simplified)</th>
+                <th>Mardi Kawi (Tradisional)</th>
                 <th>Unicode</th>
-                <th>Pelafalan (IPA)</th>
+                <th>Pelafalan (IPA) / Asal Arab</th>
             </tr>
         </thead>
         <tbody id="tableBody">
@@ -70,7 +70,7 @@
             { cat: 'Wyanjana', id: 'th', lat: 'th', kbj: 'ꦛ', kawi: 'ꦛ', uni: 'U+A99B', ipa: '/ʈ/', hana: 19, warga: 13 },
             { cat: 'Wyanjana', id: 'ng', lat: 'ng', kbj: 'ꦔ', kawi: 'ꦔ', uni: 'U+A994', ipa: '/ŋ/', hana: 20, warga: 5 },
             
-            // AKSARA MURDA (Huruf Kapital)
+            // AKSARA MURDA
             { cat: 'Murda', id: 'N_M', lat: 'N', kbj: 'ꦟ', kawi: 'ꦟ', uni: 'U+A99F', ipa: '/ɳ/', hana: 2.1, warga: 17 },
             { cat: 'Murda', id: 'K_M', lat: 'K', kbj: 'ꦑ', kawi: 'ꦑ', uni: 'U+A990', ipa: '/kʰ/', hana: 5.1, warga: 2 },
             { cat: 'Murda', id: 'T_M', lat: 'T', kbj: 'ꦡ', kawi: 'ꦡ', uni: 'U+A9A1', ipa: '/tʰ/', hana: 7.1, warga: 21 },
@@ -80,6 +80,9 @@
             { cat: 'Murda', id: 'B_M', lat: 'B', kbj: 'ꦨ', kawi: 'ꦨ', uni: 'U+A9A8', ipa: '/bʱ/', hana: 18.1, warga: 30 },
             { cat: 'Murda', id: 'J_M', lat: 'J', kbj: 'ꦙ', kawi: 'ꦙ', uni: 'U+A998', ipa: '/dʒʱ/', hana: 13.1, warga: 10 },
             { cat: 'Murda', id: 'NY_M', lat: 'NY', kbj: 'ꦘ', kawi: 'ꦘ', uni: 'U+A999', ipa: '/ɲ/', hana: 15.1, warga: 11.5 },
+            { cat: 'Murda', id: 'C_M', lat: 'C', kbj: 'ꦖ', kawi: 'ꦖ', uni: 'U+A996', ipa: '/tʃʰ/', hana: 3.1, warga: 8 },
+            { cat: 'Murda', id: 'R_M', lat: 'R', kbj: 'ꦬ', kawi: 'ꦬ', uni: 'U+A9AC', ipa: '/r/', hana: 4.1, warga: 18.1 },
+            { cat: 'Murda', id: 'DH_M', lat: 'DH', kbj: 'ꦝ', kawi: 'ꦞ', uni: 'U+A99D / U+A99E', ipa: '/ɖʱ/', hana: 12.1, warga: 16 },
 
             // MAHAPRANA & VARIAN
             { cat: 'Mahaprana & Varian', id: 'kh', lat: 'kh', kbj: 'ꦏ꦳', kawi: 'ꦑ', uni: 'K: U+A98F+A9B3 | W: U+A990', ipa: 'KBJ: /x/ | Kawi: /kʰ/', hana: 21, warga: 2.1 },
@@ -90,10 +93,22 @@
             { cat: 'Mahaprana & Varian', id: 'ddh', lat: 'dH', kbj: '-', kawi: 'ꦣ', uni: 'U+A9A3', ipa: '/dʱ/', hana: 28, warga: 23 },
             { cat: 'Mahaprana & Varian', id: 'sy', lat: 'sy / ś', kbj: 'ꦯ', kawi: 'ꦯ', uni: 'U+A9AF', ipa: '/ʃ/', hana: 31, warga: 12.6 },
             { cat: 'Mahaprana & Varian', id: 'sh', lat: 'sh / ṣ', kbj: 'ꦰ', kawi: 'ꦰ', uni: 'U+A9B0', ipa: '/ʂ/', hana: 32, warga: 19 },
-            { cat: 'Mahaprana & Varian', id: 'f', lat: 'f', kbj: 'ꦥ꦳', kawi: 'ꦥ', uni: 'K: U+A9A5+A9B3 | W: U+A9A5', ipa: '/f/', hana: 33, warga: 33 },
-            { cat: 'Mahaprana & Varian', id: 'v', lat: 'v', kbj: 'ꦮ꦳', kawi: 'ꦮ', uni: 'K: U+A9AE+A9B3 | W: U+A9AE', ipa: '/v/', hana: 34, warga: 34 },
-            { cat: 'Mahaprana & Varian', id: 'z', lat: 'z', kbj: 'ꦗ꦳', kawi: 'ꦗ', uni: 'K: U+A997+A9B3 | W: U+A997', ipa: '/z/', hana: 35, warga: 35 },
-            { cat: 'Mahaprana & Varian', id: 'dz', lat: 'dz', kbj: 'ꦢ꦳', kawi: 'ꦢ', uni: 'K: U+A9A2+A9B3 | W: U+A9A2', ipa: '/dz/', hana: 36, warga: 36 },
+
+            // AKSARA REKAN
+            { cat: 'Rekan', id: 'f', lat: 'f', kbj: 'ꦥ꦳', kawi: 'ꦥ꦳', uni: 'U+A9A5+A9B3', ipa: '/f/', hana: 33, warga: 33 },
+            { cat: 'Rekan', id: 'v', lat: 'v', kbj: 'ꦮ꦳', kawi: 'ꦮ꦳', uni: 'U+A9AE+A9B3', ipa: '/v/', hana: 34, warga: 34 },
+            { cat: 'Rekan', id: 'z', lat: 'z', kbj: 'ꦗ꦳', kawi: 'ꦗ꦳', uni: 'U+A997+A9B3', ipa: '/z/', hana: 35, warga: 35 },
+            { cat: 'Rekan', id: 'dz', lat: 'dz', kbj: 'ꦢ꦳', kawi: 'ꦢ꦳', uni: 'U+A9A2+A9B3', ipa: '/dz/', hana: 36, warga: 36 },
+            { cat: 'Rekan', id: 'q', lat: 'q', kbj: 'ꦐ', kawi: 'ꦐ', uni: 'U+A990', ipa: '/q/ (ق)', hana: 37.1, warga: 37.1 },
+            { cat: 'Rekan', id: 'hh', lat: 'hh', kbj: 'ꦲ꦳', kawi: 'ꦲ꦳', uni: 'U+A9B2+A9B3', ipa: '/ħ/ (ح)', hana: 37.2, warga: 37.2 },
+            { cat: 'Rekan', id: 'xng', lat: 'xng', kbj: 'ꦔ꦳', kawi: 'ꦔ꦳', uni: 'U+A994+A9B3', ipa: '/ʕ/ (ع)', hana: 37.3, warga: 37.3 },
+            { cat: 'Rekan', id: 'ts', lat: 'ts', kbj: 'ꦱ꦳', kawi: 'ꦱ꦳', uni: 'U+A9B1+A9B3', ipa: '/θ/ (ث)', hana: 37.4, warga: 37.4 },
+            { cat: 'Rekan', id: 'shh', lat: 'shh', kbj: 'ꦰ꦳', kawi: 'ꦰ꦳', uni: 'U+A9B0+A9B3', ipa: '/sˤ/ (ص)', hana: 37.5, warga: 37.5 },
+            { cat: 'Rekan', id: 'xsy', lat: 'xsy', kbj: 'ꦯ꦳', kawi: 'ꦯ꦳', uni: 'U+A9AF+A9B3', ipa: '/ʃ/ (ش)', hana: 37.6, warga: 37.6 },
+            { cat: 'Rekan', id: 'dl', lat: 'dl', kbj: 'ꦭ꦳', kawi: 'ꦭ꦳', uni: 'U+A9AD+A9B3', ipa: '/dˤ/ (ض)', hana: 37.7, warga: 37.7 },
+            { cat: 'Rekan', id: 'tth', lat: 'tth', kbj: 'ꦡ꦳', kawi: 'ꦡ꦳', uni: 'U+A9A1+A9B3', ipa: '/tˤ/ (ط)', hana: 37.8, warga: 37.8 },
+            { cat: 'Rekan', id: 'zh', lat: 'zh', kbj: 'ꦣ꦳', kawi: 'ꦣ꦳', uni: 'U+A9A3+A9B3', ipa: '/ðˤ/ (ظ)', hana: 37.9, warga: 37.9 },
+            { cat: 'Rekan', id: 'x', lat: 'x', kbj: 'ꦑ꦳', kawi: 'ꦑ꦳', uni: 'U+A990+A9B3', ipa: '/x/ (خ)', hana: 37.10, warga: 37.10 },
 
             // AKSARA SWARA (Vokal Pendek & Panjang / Dirgha)
             { cat: 'Swara', id: 'A_S', lat: 'A', kbj: 'ꦄ', kawi: 'ꦄ', uni: 'U+A984', ipa: '/a/', hana: 40, warga: 40 },
