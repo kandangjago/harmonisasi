@@ -1,7 +1,6 @@
 /**
- * jgst.js (Diperbarui sesuai Spesifikasi JGST Terbaru)
- * Modul pemetaan Aksara Jawa (Unicode A980 - A9DF) ke sistem Latin JGST.
- * Mendukung kombinasi 2 karakter Unicode (Swara Dirgha, Sandhangan Kombinasi, Aksara Rekan, Tanda Baca).
+ * jgst.js (Diperbarui sesuai Spesifikasi JGST Konsonan Murni)
+ * Pemetaan Aksara Jawa ke Latin JGST.
  */
 
 const jgstMap = {
@@ -28,47 +27,47 @@ const jgstMap = {
   '\uA98E\uA9B4': 'ꜷ', // Swara O + Tarung
   '\uA98E': 'o',       // Swara O
 
-  // Wyanjana & Murda
-  '\uA98F': 'ka',      // Ka
-  '\uA990': 'qa',      // Qa / Ka Murda
-  '\uA991': 'ḳa',      // Ka Sasak
-  '\uA992': 'ga',      // Ga
-  '\uA993': 'g̣a',      // Ga Murda Gha
-  '\uA994': 'ṅa',      // Nga
-  '\uA995': 'ca',      // Ca
-  '\uA996': 'c̣a',      // Ca Murda Cha
-  '\uA997': 'ja',      // Ja
-  '\uA998': 'jña',     // Ja Mahaprana / Nya Murda Jnya
-  '\uA999': 'j̣a',      // Nya Murda
-  '\uA99A': 'ña',      // Nya
-  '\uA99B': 'ṭa',      // Tta
-  '\uA99C': 'ṭha',     // Tta Mahaprana Ttha
-  '\uA99D': 'ḍa',      // Dda
-  '\uA99E': 'ḍha',     // Dda Mahaprana Ddha
-  '\uA99F': 'ṇa',      // Na Murda Nna
-  '\uA9A0': 'ta',      // Ta
-  '\uA9A1': 'tha',     // Ta Murda Tha
-  '\uA9A2': 'da',      // Da
-  '\uA9A3': 'dha',     // Da Mahaprana Dha
-  '\uA9A4': 'na',      // Na
-  '\uA9A5': 'pa',      // Pa
-  '\uA9A6': 'p̣a',      // Pa Murda Pha
-  '\uA9A7': 'ba',      // Ba
-  '\uA9A8': 'ḅa',      // Ba Murda Bha
-  '\uA9A9': 'ma',      // Ma
-  '\uA9AA': 'ya',      // Ya
+  // Wyanjana & Murda (Konsonan Murni)
+  '\uA98F': 'k',       // Ka
+  '\uA990': 'q',       // Qa / Ka Murda
+  '\uA991': 'ḳ',       // Ka Sasak
+  '\uA992': 'g',       // Ga
+  '\uA993': 'g̣',       // Ga Murda Gha
+  '\uA994': 'ṅ',       // Nga
+  '\uA995': 'c',       // Ca
+  '\uA996': 'c̣',       // Ca Murda Cha
+  '\uA997': 'j',       // Ja
+  '\uA998': 'jñ',      // Ja Mahaprana / Nya Murda Jnya
+  '\uA999': 'j̣',       // Nya Murda
+  '\uA99A': 'ñ',       // Nya
+  '\uA99B': 'ṭ',       // Tta
+  '\uA99C': 'ṭh',      // Tta Mahaprana Ttha
+  '\uA99D': 'ḍ',       // Dda
+  '\uA99E': 'ḍh',      // Dda Mahaprana Ddha
+  '\uA99F': 'ṇ',       // Na Murda Nna
+  '\uA9A0': 't',       // Ta
+  '\uA9A1': 'th',      // Ta Murda Tha
+  '\uA9A2': 'd',       // Da
+  '\uA9A3': 'dh',      // Da Mahaprana Dha
+  '\uA9A4': 'n',       // Na
+  '\uA9A5': 'p',       // Pa
+  '\uA9A6': 'p̣',       // Pa Murda Pha
+  '\uA9A7': 'b',       // Ba
+  '\uA9A8': 'ḅ',       // Ba Murda Bha
+  '\uA9A9': 'm',       // Ma
+  '\uA9AA': 'y',       // Ya
   '\uA9AB\uA9C0': 'r/',// Ra + Pangkon
-  '\uA9AB': 'ra',      // Ra
-  '\uA9AC': 'ṟa',      // Ra Agung
-  '\uA9AD': 'la',      // La
-  '\uA9AE': 'wa',      // Wa
-  '\uA9AF': 'śa',      // Sa Murda Sha
-  '\uA9B0': 'ṣa',      // Sa Mahaprana Ssa
-  '\uA9B1': 'sa',      // Sa
-  '\uA9B2': 'ha',      // Ha
+  '\uA9AB': 'r',       // Ra
+  '\uA9AC': 'ṟ',       // Ra Agung
+  '\uA9AD': 'l',       // La
+  '\uA9AE': 'w',       // Wa
+  '\uA9AF': 'ś',       // Sa Murda Sha
+  '\uA9B0': 'ṣ',       // Sa Mahaprana Ssa
+  '\uA9B1': 's',       // Sa
+  '\uA9B2': 'h',       // Ha
   '\uA9B3': '',        // Cecak telu / Nukta
 
-  // Sandhangan Swara & Kombinasi Sandhangan
+  // Sandhangan Swara & Kombinasi
   '\uA9B4': 'ā',       // Tarung
   '\uA9B5': 'o',       // Tolong varian glyph
   '\uA9B6': 'i',       // Wulu
@@ -97,34 +96,30 @@ const jgstMap = {
   '\uA9D5': '5', '\uA9D6': '6', '\uA9D7': '7', '\uA9D8': '8', '\uA9D9': '9'
 };
 
-// Peta khusus Rekan (Aksara + Cecak Telu U+A9B3)
+// Peta Rekan (Konsonan Murni)
 const rekanMap = {
-  '\uA9A5\uA9B3': 'fa',
-  '\uA9AE\uA9B3': 'va',
-  '\uA997\uA9B3': 'za',
-  '\uA9A2\uA9B3': 'dza',
-  '\uA9B2\uA9B3': 'ḥa',
-  '\uA994\uA9B3': '‘a',
-  '\uA9B1\uA9B3': 'ṡa',
-  '\uA9B0\uA9B3': 'ṣa',
-  '\uA9AF\uA9B3': 'śa',
-  '\uA9AD\uA9B3': 'ḍa',
-  '\uA9A1\uA9B3': 'ṭa',
-  '\uA9A3\uA9B3': 'ẓa',
-  '\uA98F\uA9B3': 'xa',
-  '\uA990\uA9B3': 'xa'
+  '\uA9A5\uA9B3': 'f',
+  '\uA9AE\uA9B3': 'v',
+  '\uA997\uA9B3': 'z',
+  '\uA9A2\uA9B3': 'dz',
+  '\uA9B2\uA9B3': 'ḥ',
+  '\uA994\uA9B3': '‘',
+  '\uA9B1\uA9B3': 'ṡ',
+  '\uA9B0\uA9B3': 'ṣ',
+  '\uA9AF\uA9B3': 'ś',
+  '\uA9AD\uA9B3': 'ḍ',
+  '\uA9A1\uA9B3': 'ṭ',
+  '\uA9A3\uA9B3': 'ẓ',
+  '\uA98F\uA9B3': 'x',
+  '\uA990\uA9B3': 'x'
 };
 
-/**
- * Mengganti keseluruhan aksara Jawa menjadi teks Latin JGST murni.
- */
 function transliterateToJGST(text) {
   let result = "";
   let i = 0;
   while (i < text.length) {
     let char2 = i + 1 < text.length ? text.substring(i, i + 2) : "";
     
-    // Cek kombinasi 2 karakter di rekanMap atau jgstMap
     if (rekanMap[char2] !== undefined) {
       result += rekanMap[char2];
       i += 2;
