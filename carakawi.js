@@ -1,784 +1,653 @@
-// DH Legena menggunakan Da Mahaprana U+A9A3 (ꦣ)
-const KAMUS_AKSARA = {
+const textInput = document.getElementById('textInput');
+const previewOutput = document.getElementById('previewOutput');
+const fontSelect = document.getElementById('fontSelect');
+const fontSizeRange = document.getElementById('fontSizeRange');
+const fontSizeVal = document.getElementById('fontSizeVal');
+const lineHeightRange = document.getElementById('lineHeightRange');
+const lineHeightVal = document.getElementById('lineHeightVal');
+const charCount = document.getElementById('charCount');
+const copyBtn = document.getElementById('copyBtn');
+const clearBtn = document.getElementById('clearBtn');
+
+// Map Konsonan Mardi Kawi dengan Murda sesuai kaidah Sriwedari (N, K, T, S, P, G, B, J, NY)
+const CONS_MAP = {
+    'th': 'ꦛ', 'dh': 'ꦝ', 'ny': 'ꦚ', 'ng': 'ꦔ',
+    'TH': 'ꦜ', 'DH': 'ꦞ', 'NY': 'ꦘ', 'Ny': 'ꦘ', 'NG': 'ꦔ',
+    'tH': 'ꦡ', 'dH': 'ꦣ', 'Th': 'ꦜ', 'Dh': 'ꦞ', 
+    'kh': 'ꦑ', 'gh': 'ꦓ', 'ch': 'ꦖ', 'jh': 'ꦙ', 'ph': 'ꦦ', 'bh': 'ꦨ',
+    'sh': 'ꦰ', 'sy': 'ꦯ', 'SH': 'ꦰ', 'SY': 'ꦯ',
     'h':'ꦲ', 'n':'ꦤ', 'c':'ꦕ', 'r':'ꦫ', 'k':'ꦏ',
     'd':'ꦢ', 't':'ꦠ', 's':'ꦱ', 'w':'ꦮ', 'l':'ꦭ',
-    'p':'ꦥ', 'dh':'\uA9A3', 'j':'ꦗ', 'y':'ꦪ', 'ny':'ꦚ',
-    'm':'ꦩ', 'g':'ꦒ', 'b':'ꦧ', 'th':'ꦛ', 'ng':'ꦔ', 'nx':'ꦔ',
-    'f':'ꦥ꦳', 'v':'ꦮ꦳', 'z':'ꦗ꦳',
-    'kh':'ꦏ꦳', 'dz':'ꦢ꦳', 'gh':'ꦒ꦳',
-    'sy':'ꦯ', 'sh':'ꦰ',
-    'kx':'ꦏ', 'rx':'ꦫ', 'hx':'ꦲ', 'ngx':'ꦔ'
+    'p':'ꦥ', 'j':'ꦗ', 'y':'ꦪ', 'm':'ꦩ', 'g':'ꦒ', 'b':'ꦧ',
+    'H':'ꦲ', 'N':'ꦟ', 'C':'ꦖ', 'R':'ꦫ', 'K':'ꦑ',
+    'D':'ꦝ', 'T':'ꦡ', 'S':'ꦯ', 'W':'ꦮ', 'L':'ꦭ',
+    'J':'ꦙ', 'Y':'ꦪ', 'M':'ꦩ', 'G':'ꦓ', 'B':'ꦨ', 'P':'ꦦ',
+    'f': 'ꦥ', 'v': 'ꦮ', 'z': 'ꦗ', 'dz': 'ꦢ'
 };
 
-// Pasangan DH MUTLAK menggunakan Da Murda U+A99D (꧀ꦝ)
-const AKSARA_MURDA = {
-    'n':'ꦟ', 'k':'ꦑ', 't':'ꦡ', 's':'ꦯ', 'p':'ꦦ',
-    'g':'ꦓ', 'b':'ꦨ', 'c':'ꦖ', 'ny':'ꦘ', 'j':'ꦙ', 'dh':'ꦝ'
-};
+function getWarga(char) {
+    if (['ꦕ','ꦖ','ꦗ','ꦙ','ꦚ','ꦯ','ꦪ'].includes(char)) return 'talawya';
+    if (['ꦛ','ꦜ','ꦝ','ꦞ','ꦟ','ꦰ','ꦫ'].includes(char)) return 'murdhanya';
+    if (['ꦠ','ꦡ','ꦢ','ꦣ','ꦤ','ꦱ','ꦭ'].includes(char)) return 'dantya';
+    if (['ꦏ','ꦑ','ꦒ','ꦓ','ꦔ','ꦲ'].includes(char)) return 'kanthya';
+    if (['ꦥ','ꦦ','ꦧ','ꦨ','ꦩ','ꦮ'].includes(char)) return 'osthya';
+    return 'unknown';
+}
 
-const SWARA_MAP = {
-    'A':'ꦄ', 'I':'ꦆ', 'U':'ꦈ', 'E':'ꦌ', 'É':'ꦌ', 'È':'ꦌ', 'Ê':'ꦌ', 'O':'ꦎ'
-};
+function matchVowel(str, idx) {
+    let sub2 = str.substr(idx, 2);
+    // Tambahan deteksi Ix dan ix untuk I Kawi (ꦅ)
+    if (['aa', 'ii', 'uu', 'ai', 'au', 'AA', 'II', 'UU', 'AI', 'AU', "e'", 'ex', 'Ix', 'ix'].includes(sub2)) {
+        return { val: sub2, len: 2 };
+    }
+    let sub1 = str.substr(idx, 1);
+    if (['a', 'i', 'u', 'e', 'é', 'è', 'o', 'A', 'I', 'U', 'E', 'É', 'È', 'O'].includes(sub1)) {
+        return { val: sub1, len: 1 };
+    }
+    return null;
+}
 
-const ANGKA = ['꧐','꧑','꧒','꧓','꧔','꧕','꧖','꧗','꧘','꧙'];
+function getSandhanganVowel(v) {
+    if (v === 'i' || v === 'I') return 'ꦶ';
+    if (v === 'u' || v === 'U') return 'ꦸ';
+    if (v === 'é' || v === 'è' || v === 'É' || v === 'È' || v === "e'" || v === 'ex') return 'ꦺ';
+    if (v === 'o' || v === 'O') return 'ꦺꦴ';
+    if (v === 'e' || v === 'E') return 'ꦼ'; // Sandhangan pepet (E = pepet)
+    if (v === 'aa' || v === 'AA') return 'ꦴ';
+    if (v === 'ii' || v === 'II') return 'ꦷ';
+    if (v === 'uu' || v === 'UU') return 'ꦹ';
+    if (v === 'ai' || v === 'AI') return 'ꦻ';
+    if (v === 'au' || v === 'AU') return 'ꦻꦴ';
+    if (v === 'Ix' || v === 'ix') return ''; // I Kawi tidak memiliki bentuk sandhangan mandiri
+    return '';
+}
 
-function togglePedoman() {
-    let p = document.getElementById('pedoman-section');
-    if (p.style.display === 'none' || p.style.display === '') {
-        p.style.display = 'block';
-        p.scrollIntoView({ behavior: 'smooth' });
+function getMandarinVowel(v) {
+    const isCapital = (v === v.toUpperCase() && v !== v.toLowerCase() && v !== "e'" && v !== "ex" && v !== 'Ix' && v !== 'ix');
+    if (v === "e'" || v === "ex") return 'ꦲꦺ';
+    if (v === 'Ix' || v === 'ix') return 'ꦅ'; // I Kawi
+
+    if (isCapital) {
+        if (v === 'A') return 'ꦄ';
+        if (v === 'AA') return 'ꦄꦴ';
+        if (v === 'I') return 'ꦆ'; // Swara I Sriwedari (ꦆ)
+        if (v === 'II') return 'ꦇ'; // Swara I Dirgha (ꦇ)
+        if (v === 'U') return 'ꦈ';
+        if (v === 'UU') return 'ꦈꦴ'; // Swara U Dirgha
+        if (v === 'E') return 'ꦄꦼ'; // E Pepet Swara (ꦄꦼ)
+        if (v === 'É' || v === 'È') return 'ꦌ'; // E Taling Swara
+        if (v === 'O') return 'ꦎ';
+        if (v === 'AI') return 'ꦍ'; // AI Dirgha
+        if (v === 'AU') return 'ꦎꦴ'; // AU Dirgha
+        return 'ꦄ';
     } else {
-        p.style.display = 'none';
+        if (v === 'a') return 'ꦲ';
+        if (v === 'aa') return 'ꦲꦴ';
+        if (v === 'i') return 'ꦲꦶ';
+        if (v === 'ii') return 'ꦲꦷ';
+        if (v === 'u') return 'ꦲꦸ';
+        if (v === 'uu') return 'ꦲꦹ';
+        if (v === 'é' || v === 'è') return 'ꦲꦺ';
+        if (v === 'o') return 'ꦲꦺꦴ';
+        if (v === 'e') return 'ꦲꦼ';
+        if (v === 'ai') return 'ꦲꦻ';
+        if (v === 'au') return 'ꦲꦻꦴ';
+        return 'ꦲ';
     }
 }
 
-function scrollToParamasastra() {
-    document.getElementById('paramasastra-app').scrollIntoView({ behavior: 'smooth' });
+function matchConsonant(str, idx) {
+    let sub2 = str.substr(idx, 2);
+    if (CONS_MAP[sub2]) return { char: CONS_MAP[sub2], len: 2, key: sub2.toLowerCase() };
+    let sub1 = str.substr(idx, 1);
+    if (CONS_MAP[sub1]) return { char: CONS_MAP[sub1], len: 1, key: sub1.toLowerCase() };
+    return null;
 }
 
-function scrollToDwipurwa() {
-    document.getElementById('dwipurwa-app').scrollIntoView({ behavior: 'smooth' });
-}
+function tokenize(rawStr) {
+    let tokens = [];
+    let currentWord = '';
 
-function ubahFont() {
-    let fontTerpilih = document.getElementById('fontSelect').value;
-    document.getElementById('outputJawa').style.fontFamily = fontTerpilih;
-    document.getElementById('outParamJawa').style.fontFamily = fontTerpilih;
-    if(document.getElementById('outDwipurwaJawa')) {
-        document.getElementById('outDwipurwaJawa').style.fontFamily = fontTerpilih;
-    }
-}
-
-function ubahUkuranFont() {
-    let ukuran = document.getElementById('fontSizeSlider').value;
-    document.getElementById('outputJawa').style.fontSize = ukuran + 'rem';
-}
-
-function ubahJarakBaris() {
-    let lineH = document.getElementById('lineHeightSlider').value;
-    document.getElementById('outputJawa').style.lineHeight = lineH;
-    document.getElementById('outParamJawa').style.lineHeight = lineH;
-    if(document.getElementById('outDwipurwaJawa')) {
-        document.getElementById('outDwipurwaJawa').style.lineHeight = lineH;
-    }
-}
-
-function hapusSemua() {
-    document.getElementById('inputLatin').value = '';
-    prosesTransliterasi();
-}
-
-function salinAksara() {
-    let teksAksara = document.getElementById('outputJawa').innerText;
-    if (!teksAksara) return;
-    navigator.clipboard.writeText(teksAksara).then(() => {
-        let btn = document.getElementById('btnSalin');
-        let originalText = btn.innerText;
-        btn.innerText = 'Tersalin!';
-        setTimeout(() => { btn.innerText = originalText; }, 2000);
-    });
-}
-
-function salinParamLatin() {
-    let teksLatin = document.getElementById('outParamLatin').value;
-    if (!teksLatin) return;
-    navigator.clipboard.writeText(teksLatin);
-}
-
-function salinParamJawa() {
-    let teksAksara = document.getElementById('outParamJawa').innerText;
-    if (!teksAksara) return;
-    navigator.clipboard.writeText(teksAksara).then(() => {
-        let btn = document.getElementById('btnSalinParam');
-        let originalText = btn.innerText;
-        btn.innerText = 'Tersalin!';
-        setTimeout(() => { btn.innerText = originalText; }, 2000);
-    });
-}
-
-function updateParamFromManualInput() {
-    let val = document.getElementById('outParamLatin').value;
-    document.getElementById('outParamJawa').innerText = transliterasiKalimat(val);
-}
-
-/* --- FUNGSI DWIPURWA --- */
-function prosesDwipurwa() {
-    let dasarRaw = document.getElementById('inDwipurwa').value.trim();
-    let dasar = dasarRaw.replace(/e'/g, 'é').replace(/E'/g, 'É').toLowerCase();
-
-    if(!dasar) {
-        document.getElementById('outDwipurwaLatin').value = "";
-        document.getElementById('outDwipurwaJawa').innerHTML = "";
-        return;
-    }
-
-    let firstVowelMatch = dasar.match(/[aiueoéèê]/i);
-    let resultLatin = dasar;
-
-    if (firstVowelMatch) {
-        let vokalIndex = firstVowelMatch.index;
-        let vokal = dasar[vokalIndex];
-        let awalan = dasar.substring(0, vokalIndex);
-        
-        let konsonan = "h"; 
-        if (awalan !== "") {
-            let match = awalan.match(/^(dh|th|ng|ny|kh|dz|gh|sh|sy|[bcdfghjklmnpqrstvwxyz])([rylw])?$/);
-            if (match) {
-                konsonan = match[1];
-            } else {
-                let matchComplex = awalan.match(/^((?:dh|th|ng|ny|kh|dz|gh|sh|sy|[bcdfghjklmnpqrstvwxyz])+?)([rylw])?$/);
-                if (matchComplex) {
-                    konsonan = matchComplex[1];
-                } else {
-                    konsonan = awalan;
-                }
+    for (let i = 0; i < rawStr.length; i++) {
+        let c = rawStr[i];
+        if (/[a-zA-ZéèÉÈ0-9\-\+_\']/.test(c)) {
+            currentWord += c;
+        } else {
+            if (currentWord) {
+                tokens.push({ type: 'word', val: currentWord });
+                currentWord = '';
             }
+            tokens.push({ type: 'sep', val: c });
         }
-        
-        let prefix = konsonan + vokal;
-        resultLatin = prefix + dasar;
     }
-
-    document.getElementById('outDwipurwaLatin').value = resultLatin;
-    document.getElementById('outDwipurwaJawa').innerText = transliterasiKalimat(resultLatin);
+    if (currentWord) {
+        tokens.push({ type: 'word', val: currentWord });
+    }
+    return tokens;
 }
 
-function salinDwipurwaLatin() {
-    let teksLatin = document.getElementById('outDwipurwaLatin').value;
-    if (!teksLatin) return;
-    navigator.clipboard.writeText(teksLatin);
+function processMacros(text) {
+    return text.replace(/@luhur/g, '꧅')
+               .replace(/@madya/g, '꧄')
+               .replace(/@andhap/g, '꧃')
+               .replace(/@guru/g, '꧋꧞꧋')
+               .replace(/@uger/g, '꧋꧞꧋')
+               .replace(/@adeg/g, '꧋')
+               .replace(/@pancak/g, '꧉꧞꧉');
 }
 
-function salinDwipurwaJawa() {
-    let teksAksara = document.getElementById('outDwipurwaJawa').innerText;
-    if (!teksAksara) return;
-    navigator.clipboard.writeText(teksAksara).then(() => {
-        let btn = document.getElementById('btnSalinDwipurwa');
-        let originalText = btn.innerText;
-        btn.innerText = 'Tersalin!';
-        setTimeout(() => { btn.innerText = originalText; }, 2000);
-    });
-}
-
-function updateDwipurwaFromManualInput() {
-    let val = document.getElementById('outDwipurwaLatin').value;
-    document.getElementById('outDwipurwaJawa').innerText = transliterasiKalimat(val);
-}
-
-/* --- FUNGSI PARAMASASTRA (MORFOLOGI PAUGERAN SRIWEDARI) --- */
-function prosesParamasastra() {
-    let ater = document.getElementById('selAter').value;
-    let dasarRaw = document.getElementById('inDasar').value.trim();
-    let dasar = dasarRaw.replace(/e'/g, 'é').replace(/E'/g, 'É').toLowerCase();
-    let panam = document.getElementById('selPanam').value;
-
-    document.getElementById('paramWarningArea').innerHTML = "";
-
-    if(!dasar) {
-        document.getElementById('outParamLatin').value = "";
-        document.getElementById('outParamJawa').innerHTML = "";
-        return;
-    }
-
-    let f = dasar.charAt(0);
-    let isVowelStart = /[aiueoéèê]/i.test(f);
-    let errorMsg = "";
-
-    if (ater === 'm' && !['b','p','w','m','f','v'].includes(f)) {
-        errorMsg = `Ater-ater "m-" khusus untuk kata dasar berawalan p, b, w, m.`;
-    } else if (ater === 'n' && !['d','t','j','n'].includes(f) && !dasar.startsWith('dh') && !dasar.startsWith('th')) {
-        errorMsg = `Ater-ater "n-" khusus untuk kata dasar berawalan d, dh, t, th, j, n.`;
-    } else if (ater === 'ny' && !['c','s'].includes(f) && !dasar.startsWith('ny')) {
-        errorMsg = `Ater-ater "ny-" khusus untuk kata dasar berawalan c, s, ny.`;
-    } else if (ater === 'ng' && !['g','k','l','r','y','w'].includes(f) && !isVowelStart && !dasar.startsWith('ng')) {
-        errorMsg = `Ater-ater "ng-" khusus untuk kata dasar berawalan k, g, l, r, y, w, atau vokal.`;
-    }
-
-    if (errorMsg !== "") {
-        document.getElementById('paramWarningArea').innerHTML = `<div class="param-warning">⚠️ WARNING PAUGERAN: ${errorMsg}</div>`;
-        document.getElementById('outParamLatin').value = "";
-        document.getElementById('outParamJawa').innerHTML = "";
-        return;
-    }
-
-    let stem = dasar;
-    let prefixAppended = "";
-
-    if (['N', 'm', 'n', 'ny', 'ng', 'pa'].includes(ater)) {
-        if (dasar.startsWith('ng') || dasar.startsWith('ny') || f === 'm' || f === 'n') {
-            stem = dasar;
-        } else if (f === 'g') {
-            prefixAppended = 'hang';
-            stem = dasar;
-        } 
-        else if (['p','w'].includes(f)) stem = 'm' + dasar.slice(1);
-        else if (f === 'b') stem = 'm' + dasar;
-        else if (dasar.startsWith('th')) stem = 'n' + dasar.slice(2); 
-        else if (f === 't') stem = 'n' + dasar.slice(1); 
-        else if (['d','j'].includes(f) || dasar.startsWith('dh')) stem = 'n' + dasar; 
-        else if (['c','s'].includes(f)) stem = 'ny' + dasar.slice(1);
-        else if (f === 'k') stem = 'ng' + dasar.slice(1);
-        else if (['l','r','y'].includes(f) || isVowelStart) stem = 'ng' + dasar;
-        else stem = 'ng' + dasar;
-
-        if (ater === 'pa') {
-            prefixAppended = 'pa';
-        }
-    } else if (ater === 'pating_paN') {
-        let nasal = '';
-        if (dasar.startsWith('ng') || dasar.startsWith('ny') || f === 'm' || f === 'n') {
-            nasal = '';
-        } else if (['p','b','w','m','f','v'].includes(f)) {
-            nasal = 'm';
-        } else if (['t','d','j','n'].includes(f) || dasar.startsWith('dh') || dasar.startsWith('th')) {
-            nasal = 'n';
-        } else if (['c','s'].includes(f) || dasar.startsWith('ny')) {
-            nasal = 'ny';
-        } else {
-            nasal = 'ng';
-        }
-        stem = 'pa' + nasal + dasar; 
-        prefixAppended = 'pating ';
-    } else if (ater === 'kuma') {
-        if (isVowelStart || f === 'r' || f === 'l') {
-            stem = dasar;
-            prefixAppended = 'kum'; 
-        } else {
-            prefixAppended = 'kuma';
-        }
-    } else if (ater === 'pi' || ater === 'kapi') {
-        if (dasar === 'ambak' || dasar === 'hambak') {
-            stem = 'yambak';
-            prefixAppended = ater;
-        } else if (isVowelStart) {
-            stem = dasar.startsWith('h') ? dasar : 'h' + dasar;
-            prefixAppended = ater;
-        } else {
-            prefixAppended = ater;
-        }
-    } else if (ater === 'ma') {
-        if (f === 'i') {
-            stem = 'mé' + dasar.slice(1);
-        } else {
-            prefixAppended = 'ma';
-        }
-    } else if (ater === 'sa') {
-        const saExclusions = ['wengi', 'wulan', 'wis', 'weruh', 'wiji', 'wanci'];
-        if (f === 'w' && !saExclusions.includes(dasar)) {
-            prefixAppended = 'su';
-        } else {
-            prefixAppended = 'sa';
-        }
-    } else if (ater === 'in') {
-        if (isVowelStart) {
-            stem = 'in' + dasar;
-        } else {
-            stem = f + 'in' + dasar.slice(1);
-        }
-        prefixAppended = '';
-    } else if (ater !== '') {
-        prefixAppended = ater;
-    }
-
-    let resultLatin = "";
-
-    if (panam === '') {
-        resultLatin = prefixAppended ? (prefixAppended + stem) : stem;
-    } else {
-        let stemLastChar = stem.slice(-1);
-        let stemIsVowel = /[aiueoéèê]/i.test(stemLastChar);
-        let isTanggapI = (panam === 'i' && (ater === 'ka' || ater === 'in'));
-
-        if (!stemIsVowel) {
-            let formattedStem = prefixAppended ? (prefixAppended + stem) : stem;
-            if (panam === 'an_e') {
-                resultLatin = formattedStem + '-anné';
-            } else {
-                let currentPanam = isTanggapI ? 'an' : panam;
-                resultLatin = formattedStem + '-' + currentPanam;
-            }
-        } else {
-            let rootVowel = stemLastChar;
-            let body = stem;
-            let suffixMod = panam;
-
-            if (isTanggapI) {
-                if (rootVowel === 'a') {
-                    body = stem;
-                    suffixMod = 'nnan';
-                } else if (rootVowel === 'i') {
-                    body = stem.slice(0, -1) + 'è';
-                    suffixMod = 'nnan';
-                } else if (rootVowel === 'u') {
-                    body = stem.slice(0, -1) + 'o';
-                    suffixMod = 'nnan';
-                } else if (['e','é','è','o'].includes(rootVowel)) {
-                    body = stem;
-                    suffixMod = 'nnan';
-                }
-            } else if (panam === 'i' || panam === 'ana') {
-                suffixMod = (panam === 'i') ? 'nni' : 'nnana';
-                if (rootVowel === 'u') body = stem.slice(0, -1) + 'o';
-                else if (rootVowel === 'i') body = stem.slice(0, -1) + 'é';
-                else if (rootVowel === 'a') body = stem;
-                else if (['e','é','è','o'].includes(rootVowel)) body = stem;
-            } else if (panam === 'a') {
-                const explicitHaWords = ['priyé', 'priyayi', 'tawu', 'suwowo'];
-                if (explicitHaWords.includes(stem)) {
-                    body = stem;
-                    suffixMod = 'ha';
-                } else {
-                    if (rootVowel === 'i') {
-                        body = stem; suffixMod = 'ya'; 
-                    } else if (rootVowel === 'u' || rootVowel === 'o') {
-                        body = stem; suffixMod = 'wa'; 
-                    } else {
-                        body = stem; suffixMod = 'a';
-                    }
-                }
-            } else if (panam === 'na') {
-                if (rootVowel === 'a') {
-                    body = stem;
-                    suffixMod = 'kna';
-                } else if (rootVowel === 'i') {
-                    body = stem.slice(0, -1) + 'é';
-                    suffixMod = 'kna';
-                } else if (rootVowel === 'u') {
-                    body = stem.slice(0, -1) + 'o';
-                    suffixMod = 'kna';
-                } else if (['e','é','è','o'].includes(rootVowel)) {
-                    body = stem;
-                    suffixMod = 'kna';
-                }
-            } else if (panam === 'an_e') {
-                if (rootVowel === 'a') {
-                    body = stem; suffixMod = 'nnanné'; 
-                } else if (rootVowel === 'i') {
-                    body = stem.slice(0, -1) + 'è'; suffixMod = 'nnanné'; 
-                } else if (rootVowel === 'u') {
-                    body = stem.slice(0, -1) + 'o'; suffixMod = 'nnanné'; 
-                } else if (['e','é','è'].includes(rootVowel)) {
-                    body = stem; suffixMod = 'anné'; 
-                } else if (rootVowel === 'o') {
-                    body = stem; suffixMod = 'nnanné'; 
-                }
-            } else {
-                if (panam === 'an') {
-                    if (stem === 'uji') {
-                        body = stem; suffixMod = 'an'; 
-                    } else if (rootVowel === 'a') {
-                        body = stem; suffixMod = 'n'; 
-                    } else if (rootVowel === 'i') {
-                        body = stem.slice(0, -1) + 'è'; suffixMod = 'n'; 
-                    } else if (rootVowel === 'u') {
-                        body = stem.slice(0, -1) + 'o'; suffixMod = 'n'; 
-                    } else if (['e','é','è'].includes(rootVowel)) {
-                        body = stem; suffixMod = 'an'; 
-                    } else if (rootVowel === 'o') {
-                        body = stem; suffixMod = 'nan'; 
-                    }
-                } else if (rootVowel === 'a') {
-                    if(['ake', 'aké'].includes(panam)) suffixMod = 'kake';
-                    else if(panam === 'aken') suffixMod = 'kaken';
-                    else if(panam === 'en') suffixMod = 'nen';
-                    else if(['e', 'é'].includes(panam)) suffixMod = 'ne';
-                    else if(panam === 'ipun') suffixMod = 'nipun';
-                    else suffixMod = panam;
-                } else if (rootVowel === 'i') {
-                    if (['e', 'é', 'ipun'].includes(panam)) {
-                        body = stem;
-                        if (panam === 'ipun') suffixMod = 'nipun';
-                        else suffixMod = 'ne';
-                    } else {
-                        body = stem.slice(0, -1) + 'é';
-                        if(['ake', 'aké'].includes(panam)) suffixMod = 'kake';
-                        else if(panam === 'aken') suffixMod = 'kaken';
-                        else if(panam === 'en') suffixMod = 'nen';
-                        else suffixMod = panam;
-                    }
-                } else if (rootVowel === 'u') {
-                    if (panam === 'ipun') {
-                        body = stem;
-                        suffixMod = 'nipun';
-                    } else if (['e', 'é'].includes(panam)) {
-                        body = stem;
-                        suffixMod = 'ne';
-                    } else if (['ake', 'aké', 'aken', 'en'].includes(panam)) {
-                        body = stem.slice(0, -1) + 'o';
-                        if(['ake','aké'].includes(panam)) suffixMod='kake';
-                        if(panam==='aken') suffixMod='kaken';
-                        if(panam==='en') suffixMod='nen';
-                    } else {
-                        suffixMod = panam;
-                    }
-                } else if (['e','é','è','o'].includes(rootVowel)) {
-                    if(['ake', 'aké', 'aken', 'en', 'e', 'é', 'ipun'].includes(panam)) {
-                        if(['ake','aké'].includes(panam)) suffixMod='kake';
-                        if(panam==='aken') suffixMod='kaken';
-                        if(panam==='en') suffixMod='nen';
-                        if(['e', 'é'].includes(panam)) suffixMod='ne';
-                        if(panam==='ipun') suffixMod='nipun';
-                    } else suffixMod = panam;
-                } else {
-                    suffixMod = panam;
-                }
-            }
-
-            let fullBody = prefixAppended ? (prefixAppended + body) : body;
-            resultLatin = fullBody + '-' + suffixMod;
-        }
-    }
-
-    document.getElementById('outParamLatin').value = resultLatin;
-    document.getElementById('outParamJawa').innerText = transliterasiKalimat(resultLatin);
-}
-
-/* --- ENGINE TRANSLITERASI UTAMA --- */
-function prosesTransliterasi() {
-    let teksInput = document.getElementById('inputLatin').value;
-    let hasil = transliterasiKalimat(teksInput);
-    document.getElementById('outputJawa').innerText = hasil;
-}
-
-function transliterasiKalimat(teks) {
-    let teksDiolah = teks.replace(/e'/g, 'é').replace(/E'/g, 'É');
-
-    // ATURAN ANUSWARA + KATA DASAR BERAWALAN G (ngg- -> hangg-)
-    teksDiolah = teksDiolah.replace(/\bngg/gi, function(match) {
-        return (match[0] === 'N' || match[0] === 'H') ? 'Hangg' : 'hangg';
-    });
-
-    teksDiolah = teksDiolah.replace(/(^|[\.\?!]\s*)(mb|ndh|nd|nth|nc|nj)/gim, function(match, p1, p2) {
-        return p1 + 'ha' + p2;
-    });
-
-    let baris = teksDiolah.split('\n');
-    let hasilBaris = baris.map(line => {
-        let kataKata = line.split(/\s+/);
-        let kataJawa = kataKata.map(kata => transliterasiKata(kata));
-        
-        let lineJoined = kataJawa.join(''); 
-        
-        lineJoined = lineJoined.replace(/꧀ꦊ/g, '꧀ꦭꦼ');
-        lineJoined = lineJoined.replace(/꧀([ꦄꦆꦈꦌꦎ]|[ꦏꦢꦒꦗ]꦳)/g, '꧀\u200C$1');
-
-        // ATURAN BAKU: Pencegahan Tumpuk Tiga (Pasangan Ganda Antarkata)
-        lineJoined = lineJoined.replace(/([ꦀ-꧟])꧀([ꦀ-꧟])(꦳?)꧀([ꦀ-꧟])/g, function(match, p1, p2, p3, p4) {
-            if (p2 === 'ꦥ' || p2 === 'ꦱ') return match; 
-            return p1 + '꧀\u200C' + p2 + p3 + '꧀' + p4; 
-        });
-
-        // INTEGRASI MUTLAK PAUGERAN SRIWEDARI:
-        // Memastikan secara global bahwa SETIAP pasangan Da Mahaprana (꧀ꦣ) DIPAKSA berubah menjadi Pasangan Da Murda (꧀ꦝ)
-        lineJoined = lineJoined.replace(/꧀ꦣ/g, '꧀ꦝ');
-
-        return lineJoined;
-    });
-    return hasilBaris.join('\n');
-}
-
-function transliterasiKata(rawLatin) {
-    if (!rawLatin) return "";
-
-    let isKataNingrat = rawLatin.toLowerCase().includes('ningrat');
-
-    if (/^([a-zA-Z]\.)+$/.test(rawLatin)) {
-        let abbr = "";
-        for (let j = 0; j < rawLatin.length; j += 2) {
-            let h = rawLatin[j].toLowerCase();
-            let nglegena = KAMUS_AKSARA[h] || (['a','i','u','e','o'].includes(h) ? 'ꦲ' : '');
-            if (nglegena) abbr += `${nglegena}꧈`; 
-        }
-        return abbr;
-    }
-
-    if (/^dak[ry]/i.test(rawLatin)) {
-        let isY = /^daky/i.test(rawLatin);
-        let rest = rawLatin.substring(4); 
-        let prefixAksara = KAMUS_AKSARA['d'] + 'ꦏ꧀'; 
-        
-        if (isY) {
-            prefixAksara += KAMUS_AKSARA['y'];
-        } else {
-            if (/^(e|ê)/i.test(rest)) {
-                prefixAksara += 'ꦉ'; 
-                rest = rest.substring(1);
-            } else {
-                prefixAksara += KAMUS_AKSARA['r']; 
-            }
-        }
-        return prefixAksara + transliterasiKata(rest);
-    }
-
-    let latinProcessed = rawLatin;
-    const cons = "(?:dh|th|ng|ny|kh|dz|gh|kx|rx|hx|ngx|sy|sh|[bcdfghjklmnpqrstvwxyz])";
-    const nas = "(?:m|n|ng|ny)";
-
-    let isAnuswaraHanja = /^hanj[aA]|^hany[aA]/i.test(latinProcessed);
-
-    if (!isAnuswaraHanja) {
-        if (/^p[aeêEÊ]ndhawa(-[a-zA-ZéèêÉÈÊ]+)?$/i.test(latinProcessed)) {
-            latinProcessed = latinProcessed.replace(/^(p)[aeêEÊ](ndhawa(?:-[a-zA-ZéèêÉÈÊ]+)?)$/i, function(match, p1, p2) {
-                return p1 + 'a' + p2;
-            });
-        } else {
-            let rule2 = new RegExp(`^(${cons})?[aA](${nas})(${cons})a(${cons})a(-[a-zA-ZéèêÉÈÊ]+)?$`, 'i');
-            latinProcessed = latinProcessed.replace(rule2, (m, c1, n, c2, c3, suf) => {
-                return (c1 || '') + 'e' + n + c2 + 'a' + c3 + 'a' + (suf || '');
-            });
-        }
-
-        let rule1 = new RegExp(`^(${cons})[eêEÊ](${cons})a(${cons})a(-[a-zA-ZéèêÉÈÊ]+)?$`, 'i');
-        latinProcessed = latinProcessed.replace(rule1, (m, c1, c2, c3, suf) => {
-            return c1 + 'a' + c2 + 'a' + c3 + 'a' + (suf || '');
-        });
-    }
-
-    latinProcessed = latinProcessed.replace(/nc/g, 'nyc').replace(/nj/g, 'nyj');
-    latinProcessed = latinProcessed.replace(/Nc/g, 'Nyc').replace(/Nj/g, 'Nyj');
-    latinProcessed = latinProcessed.replace(/NC/g, 'NYC').replace(/NJ/g, 'NYJ');
-
-    const prefixRegexStr = "kuma|kami|kapi|dak|tak|kok|tar|pra|ng|ny|ko|di|ha|ka|ke|sa|pa|pi|m|n|a";
-    const keretRegex = new RegExp(`^(${prefixRegexStr})?([bcdfghjklmnpqrstvwxyz]*)([eê])r([bcdfghjklmnpqrstvwxyz])`, 'i');
+function transliterateKawi(rawText) {
+    if (!rawText) return '';
     
-    latinProcessed = latinProcessed.replace(keretRegex, function(match, p1, p2, p3, p4) {
-        let prefix = p1 || '';
-        return prefix + p2 + 'r' + p3 + p4; 
-    });
+    rawText = processMacros(rawText);
+    let tokens = tokenize(rawText);
+    let result = '';
 
-    latinProcessed = latinProcessed.replace(/([a-zA-ZéèêÉÈÊ]+)-([a-zA-ZéèêÉÈÊ]+)/g, function(match, root, suffix) {
-        if (root.toLowerCase() === suffix.toLowerCase()) return root + suffix;
+    for (let t = 0; t < tokens.length; t++) {
+        let token = tokens[t];
 
-        let suffixLower = suffix.toLowerCase();
-        let isPepetSuffix = (suffixLower === 'aken' || suffixLower === 'kaken' || suffixLower === 'en' || suffixLower === 'nen');
-        let modSuffix = isPepetSuffix ? suffix.replace(/[eéèê]/gi, 'e') : suffix.replace(/[eéèê]/gi, 'é');
-
-        let lastChar = root.slice(-1).toLowerCase();
-        let lastTwoChars = root.slice(-2).toLowerCase();
-        let vowels = ['a','i','u','e','o','é','è','ê'];
-        
-        if ((modSuffix.toLowerCase() === 'kaké' || modSuffix.toLowerCase() === 'kaken') && vowels.includes(lastChar)) {
-            modSuffix = 'kxh' + modSuffix.substring(1); 
-        }
-
-        let firstCharSuffix = modSuffix.charAt(0).toLowerCase();
-        let consonantToDouble = "";
-
-        if (vowels.includes(firstCharSuffix)) {
-            if (['ng', 'ny', 'dh', 'th'].includes(lastTwoChars)) {
-                consonantToDouble = lastTwoChars;
-            } else if (!vowels.includes(lastChar) && lastChar !== 'y' && lastChar !== 'w') {
-                consonantToDouble = lastChar; 
-            }
-        }
-        return root + consonantToDouble + modSuffix;
-    });
-
-    let wordMatchForExc = latinProcessed.match(/^([a-zA-ZéèêÉÈÊ]+)/);
-    let isPrefixException = false;
-    
-    if (wordMatchForExc) {
-        const excBases = "taka.*|taki.*|taku.*|take.*|také.*|takè.*|takê.*|tako.*|daka.*|daki.*|daku.*|dake.*|daké.*|dakè.*|dakê.*|dako.*|koka.*|koki.*|koku.*|koke.*|koké.*|kokè.*|kokê.*|koko.*|koas.*|koala.*|koali.*|koin.*|koord.*|koper.*|dian.*|diar.*|diare.*|dialog.*|diana.*|diaper.*|diastol.*|diat.*|diuretik.*|diet.*|dieng.*|diesel.*|dioda.*|diorama.*|dion.*|dioksida.*|kain.*|kaos.*|kaok.*|kaum.*|kail.*|kait.*|kais.*|kaing.*|keong.*|keok.*";
-        const excPattern = new RegExp(`^(${excBases})$`, 'i');
-        if (excPattern.test(wordMatchForExc[1])) {
-            isPrefixException = true;
-        }
-    }
-
-    if (!isPrefixException) {
-        latinProcessed = latinProcessed.replace(/^(dak|tak|kok|ko|di|ka|ke)([aiueoéèê])/i, function(match, p1, p2) {
-            let p1Lower = p1.toLowerCase();
-            if (p1Lower === 'ko' || p1Lower === 'di' || p1Lower === 'ka' || p1Lower === 'ke') {
-                return p1 + 'hx' + p2;
-            } else {
-                return p1.slice(0, -1) + 'kxhx' + p2;
-            }
-        });
-    }
-
-    let prevLatin = "";
-    while (latinProcessed !== prevLatin) {
-        prevLatin = latinProcessed;
-        latinProcessed = latinProcessed.replace(/([aeêAEÊ])([aiueoéèê])/g, '$1h$2');
-        latinProcessed = latinProcessed.replace(/([iéèIÉÈ])([aiueoéèê])/g, '$1y$2');
-        latinProcessed = latinProcessed.replace(/([uoUO])([aiueoéèê])/g, '$1w$2');
-    }
-
-    let wordMatch = latinProcessed.match(/^([a-zA-ZéèêÉÈÊ]+)([^a-zA-ZéèêÉÈÊ]*)$/);
-    if (wordMatch) {
-        let wordOnly = wordMatch[1];
-        let punctuations = wordMatch[2];
-
-        let token = wordOnly
-            .replace(/ng/g, '1').replace(/Ng/g, '5').replace(/NG/g, '!')
-            .replace(/ny/g, '2').replace(/Ny/g, '6').replace(/NY/g, '@')
-            .replace(/dh/g, '3').replace(/Dh/g, '7').replace(/DH/g, '#')
-            .replace(/th/g, '4').replace(/Th/g, '8').replace(/TH/g, '$');
-
-        if (!isAnuswaraHanja) {
-            token = token.replace(/a([mnMN125!6@])([bcdfghjklpqrstvwxzBCDFGHJKLPQRSTVWXZ347#8$]+)a(h?a)?$/i, 'o$1$2a$3');
-        }
-
-        wordOnly = token
-            .replace(/1/g, 'ng').replace(/5/g, 'Ng').replace(/!/g, 'NG')
-            .replace(/2/g, 'ny').replace(/6/g, 'Ny').replace(/@/g, 'NY')
-            .replace(/3/g, 'dh').replace(/7/g, 'Dh').replace(/#/g, 'DH')
-            .replace(/4/g, 'th').replace(/8/g, 'Th').replace(/\$/g, 'TH');
-        
-        latinProcessed = wordOnly + punctuations;
-    }
-
-    let res = "";
-    let i = 0;
-    let latin = latinProcessed;
-    let isFirstAksara = true; 
-
-    while (i < latin.length) {
-        if (latin[i] >= '0' && latin[i] <= '9') {
-            if (!res.endsWith('꧇') && !/[꧐-꧙]$/.test(res)) { res += '꧇'; }
-            res += ANGKA[parseInt(latin[i])];
-            i++;
-            if (i >= latin.length || !(latin[i] >= '0' && latin[i] <= '9')) { res += '꧇'; }
+        if (token.type === 'sep') {
+            if (token.val === ' ') continue; 
+            if (token.val === '\n') { result += '\n'; continue; }
+            if (token.val === '.') { result += '꧉'; continue; }
+            if (token.val === ',') { result += '꧈'; continue; }
+            result += token.val;
             continue;
         }
 
-        if (latin[i] === ',') { 
-            if (res.endsWith('꧀')) { res += '\u200C'; } else { res += '꧈'; }
-            i++; continue; 
-        }
-        if (latin[i] === '.') { 
-            if (res.endsWith('꧀')) { res += '꧈\u200C'; } else { res += '꧉'; }
-            i++; continue; 
-        }
+        let word = token.val;
+        let i = 0;
         
-        if (!/[a-zA-ZéèêÉÈÊ]/.test(latin[i])) {
-            res += latin[i]; i++; continue; 
-        }
+        let rSeenInWord = false;
+        let lastConsKey = null;
+        let lastConsIsMati = false;
 
-        let c = "";
-        let jump = 0;
-        let isSwara = false;
-        let isMurda = false;
-
-        let c3_raw = i+2 < latin.length ? latin.substring(i, i+3) : ""; 
-        let c2_raw = i+1 < latin.length ? latin.substring(i, i+2) : "";
-        let c1_raw = latin[i];
-
-        let c3 = c3_raw.toLowerCase();
-        let c2 = c2_raw.toLowerCase();
-        let c1 = c1_raw.toLowerCase();
-
-        if ((c2_raw === 'NY' || c2_raw === 'Ny') && AKSARA_MURDA['ny']) {
-            c = 'ny'; jump = 2; isMurda = true;
-        } else if (c1_raw === 'J' && AKSARA_MURDA['j']) {
-            c = 'j'; jump = 1; isMurda = true;
-        } else if (['ngx'].includes(c3)) {
-            c = c3; jump = 3;
-        } else if (['ng','ny','dh','th','nx','kh','dz','gh','kx','rx','hx','sy','sh'].includes(c2)) {
-            c = c2; jump = 2;
-        } else if (KAMUS_AKSARA[c1]) {
-            c = c1; jump = 1;
-            if (c1_raw >= 'A' && c1_raw <= 'Z' && AKSARA_MURDA[c1]) {
-                isMurda = true;
+        let nextWordToken = null;
+        for (let nt = t + 1; nt < tokens.length; nt++) {
+            if (tokens[nt].type === 'word') {
+                nextWordToken = tokens[nt];
+                break;
             }
-        } else if (['A','I','U','E','O','É','È','Ê'].includes(c1_raw)) {
-            c = c1_raw; isSwara = true; jump = 1;
+            if (tokens[nt].type === 'sep' && (tokens[nt].val === '.' || tokens[nt].val === ',' || tokens[nt].val === '\n')) {
+                break;
+            }
         }
 
-        if (c === "" && /[aieéèêou]/.test(c1)) {
-            c = "h"; jump = 0;
-        } else if (c !== "") {
-            i += jump;
-        } else {
-            res += latin[i]; i++; continue;
-        }
+        while (i < word.length) {
+            let c = word[i];
 
-        let lowerLatin = latin.toLowerCase();
-        let medial = "";
-        
-        if (!isSwara && i < lowerLatin.length && (lowerLatin[i] === 'y' || lowerLatin[i] === 'r')) {
-            if (i+1 < lowerLatin.length && /[aieéèêou]/.test(lowerLatin[i+1])) {
-                let rejectMedial = false;
+            if (c === '-') {
+                i++;
+                continue;
+            }
+
+            if (c === '_') {
+                result += '\u200D';
+                i++;
+                continue;
+            }
+
+            if (c === '+') {
+                result += '꦳';
+                i++;
+                continue;
+            }
+
+            if (c >= '0' && c <= '9') {
+                let numStr = '';
+                while (i < word.length && word[i] >= '0' && word[i] <= '9') {
+                    const numMap = {'0':'ꧏ','1':'꧑','2':'꧒','3':'꧓','4':'꧔','5':'꧕','6':'꧖','7':'꧗','8':'꧘','9':'꧙'};
+                    numStr += numMap[word[i]];
+                    i++;
+                }
+                result += '꧇' + numStr + '꧇';
+                continue;
+            }
+
+            // --- Eksekusi Makro Vokal Panjang (Dirgha) Kawi REE & LEE ---
+            if (word.substr(i, 3).toLowerCase() === 'ree') {
+                let isStartOfWord = (i === 0);
+                let prevCharIsVowel = (i > 0 && matchVowel(word, i - 1));
+                let prevCharIsHyphen = (i > 0 && word[i - 1] === '-');
+                if (isStartOfWord || prevCharIsVowel || prevCharIsHyphen) {
+                    result += 'ꦉꦴ'; 
+                    i += 3;
+                    continue;
+                }
+            }
+
+            if (word.substr(i, 3).toLowerCase() === 'lee') {
+                let isStartOfWord = (i === 0);
+                let prevCharIsVowel = (i > 0 && matchVowel(word, i - 1));
+                let prevCharIsHyphen = (i > 0 && word[i - 1] === '-');
+                if (isStartOfWord || prevCharIsVowel || prevCharIsHyphen) {
+                    result += 'ꦋ'; 
+                    i += 3;
+                    continue;
+                }
+            }
+
+            // --- Eksekusi Makro RE & LE ---
+            if (word.substr(i, 2).toLowerCase() === 're') {
+                let isStartOfWord = (i === 0);
+                let prevCharIsVowel = (i > 0 && matchVowel(word, i - 1));
+                let prevCharIsHyphen = (i > 0 && word[i - 1] === '-');
+                if (isStartOfWord || prevCharIsVowel || prevCharIsHyphen) {
+                    result += 'ꦉ'; 
+                    i += 2;
+                    continue;
+                }
+            }
+
+            if (word.substr(i, 2).toLowerCase() === 'le') {
+                let isStartOfWord = (i === 0);
+                let prevCharIsVowel = (i > 0 && matchVowel(word, i - 1));
+                let prevCharIsHyphen = (i > 0 && word[i - 1] === '-');
+                if (isStartOfWord || prevCharIsVowel || prevCharIsHyphen) {
+                    result += 'ꦊ'; 
+                    i += 2;
+                    continue;
+                }
+            }
+
+            let cons = matchConsonant(word, i);
+
+            if (cons) {
+                let consChar = cons.char;
+                let nextIdx = i + cons.len;
+
+                while (nextIdx < word.length && word[nextIdx] === '+') {
+                    consChar += '꦳';
+                    nextIdx++;
+                }
+
+                let peekIdx = nextIdx;
+                while(peekIdx < word.length && (word[peekIdx] === '-' || word[peekIdx] === '_')) peekIdx++;
+
+                let hasVowelNext = matchVowel(word, peekIdx) !== null;
+                let isWordEnd = !hasVowelNext && peekIdx >= word.length;
+                let isMati = !hasVowelNext && !isWordEnd;
+
+                let nextConsTemp = null;
+                if (isMati) {
+                    nextConsTemp = matchConsonant(word, peekIdx);
+                }
+
+                if (cons.key === 'n') {
+                    if (rSeenInWord) consChar = 'ꦟ';
+                } else if (cons.key === 's') {
+                    if (rSeenInWord) consChar = 'ꦰ';
+                    if (lastConsKey === 'k' && lastConsIsMati) consChar = 'ꦰ';
+                }
+
+                if (isMati && nextConsTemp) {
+                    let nextWarga = getWarga(nextConsTemp.char);
+                    if (cons.key === 's') {
+                        if (nextWarga === 'talawya') consChar = 'ꦯ';
+                        else if (nextWarga === 'murdhanya') consChar = 'ꦰ';
+                        else if (['dantya', 'kanthya', 'osthya'].includes(nextWarga)) consChar = 'ꦱ';
+                    } else if (cons.key === 'n') {
+                        if (nextWarga === 'talawya') consChar = 'ꦚ';
+                        else if (nextWarga === 'murdhanya') consChar = 'ꦟ';
+                        else if (nextWarga === 'dantya') consChar = 'ꦤ';
+                    }
+                }
+
+                if (cons.key === 'r') rSeenInWord = true;
+
+                let handledWyanjana = false;
+                if (nextIdx < word.length) {
+                    let nextConsTemp2 = matchConsonant(word, nextIdx);
+
+                    if (nextConsTemp2 && nextConsTemp2.key === 'r') {
+                        let afterRIdx = nextIdx + nextConsTemp2.len;
+                        let rVowel = matchVowel(word, afterRIdx);
+                        if (rVowel) {
+                            let v = rVowel.val;
+                            if (v === 'e' || v === 'E') {
+                                result += consChar + 'ꦽ'; 
+                            } else {
+                                result += consChar + 'ꦿ' + getSandhanganVowel(v); 
+                            }
+                            i = afterRIdx + rVowel.len;
+                            rSeenInWord = true;
+                            lastConsKey = 'r';
+                            lastConsIsMati = false;
+                            handledWyanjana = true;
+                        }
+                    }
+                    else if (nextConsTemp2 && nextConsTemp2.key === 'y') {
+                        let afterYIdx = nextIdx + nextConsTemp2.len;
+                        let yVowel = matchVowel(word, afterYIdx);
+                        if (yVowel) {
+                            let v = yVowel.val;
+                            result += consChar + 'ꦾ' + getSandhanganVowel(v); 
+                            i = afterYIdx + yVowel.len;
+                            lastConsKey = 'y';
+                            lastConsIsMati = false;
+                            handledWyanjana = true;
+                        }
+                    }
+                    else if (nextConsTemp2 && nextConsTemp2.key === 'l') {
+                        let afterLIdx = nextIdx + nextConsTemp2.len;
+                        let lVowel = matchVowel(word, afterLIdx);
+                        if (lVowel && (lVowel.val === 'e' || lVowel.val === 'E')) {
+                            result += consChar + '꧀ꦊ';
+                            i = afterLIdx + lVowel.len;
+                            lastConsKey = 'l';
+                            lastConsIsMati = false;
+                            handledWyanjana = true;
+                        }
+                    }
+                }
+
+                if (handledWyanjana) continue;
+
+                let nextV = matchVowel(word, peekIdx);
+                if (nextV) {
+                    result += consChar + getSandhanganVowel(nextV.val);
+                    
+                    let afterVowelIdx = peekIdx + nextV.len;
+                    while(afterVowelIdx < word.length && (word[afterVowelIdx] === '-' || word[afterVowelIdx] === '_')) {
+                        afterVowelIdx++;
+                    }
+                    
+                    let nextV2 = matchVowel(word, afterVowelIdx);
+                    if (nextV2) {
+                        let v1 = nextV.val;
+                        let v2 = nextV2.val;
+
+                        if (['i', 'I', 'é', 'è', 'E', 'ii', 'II', "e'", 'ex'].includes(v1)) {
+                            result += 'ꦪ' + getSandhanganVowel(v2);
+                        } else if (['u', 'U', 'o', 'O', 'uu', 'UU'].includes(v1)) {
+                            result += 'ꦮ' + getSandhanganVowel(v2);
+                        } else {
+                            result += 'ꦲ' + getSandhanganVowel(v2);
+                        }
+                        i = afterVowelIdx + nextV2.len;
+                        lastConsIsMati = false;
+                        continue;
+                    }
+
+                    i = peekIdx + nextV.len;
+                    lastConsKey = cons.key;
+                    lastConsIsMati = false;
+                    continue;
+                }
+
+                isWordEnd = !nextV && (peekIdx >= word.length);
+
+                if (cons.key === 'ng') {
+                    if (!isWordEnd) {
+                        result += consChar + '꧀'; 
+                        i = nextIdx;
+                    } else {
+                        let crossVowel = nextWordToken ? matchVowel(nextWordToken.val, 0) : null;
+                        if (crossVowel) {
+                            let v = crossVowel.val;
+                            result += consChar + getSandhanganVowel(v);
+                            nextWordToken.val = nextWordToken.val.substr(crossVowel.len);
+                        } else {
+                            if (consChar.includes('꦳')) {
+                                result += consChar + '꧀';
+                            } else {
+                                result += 'ꦁ'; 
+                            }
+                        }
+                        i = nextIdx;
+                    }
+                    lastConsKey = 'ng';
+                    lastConsIsMati = true;
+                    continue;
+                }
+
+                if (cons.key === 'h') {
+                    if (!isWordEnd) {
+                        result += consChar + '꧀';
+                        i = nextIdx;
+                    } else {
+                        let crossVowel = nextWordToken ? matchVowel(nextWordToken.val, 0) : null;
+                        if (crossVowel) {
+                            let v = crossVowel.val;
+                            result += consChar + getSandhanganVowel(v);
+                            nextWordToken.val = nextWordToken.val.substr(crossVowel.len);
+                        } else {
+                            if (consChar.includes('꦳')) {
+                                result += consChar + '꧀';
+                            } else {
+                                result += 'ꦃ';
+                            }
+                        }
+                        i = nextIdx;
+                    }
+                    lastConsKey = 'h';
+                    lastConsIsMati = true;
+                    continue;
+                }
+
+                if (cons.key === 'r') {
+                    if (!isWordEnd) {
+                        result += consChar + '꧀';
+                        let nextConsTemp = matchConsonant(word, peekIdx);
+
+                        if (nextConsTemp) {
+                            let consChar2_1 = nextConsTemp.char;
+                            let consChar2_2 = nextConsTemp.char;
+                            
+                            let doubleNextIdx = peekIdx + nextConsTemp.len;
+                            while (doubleNextIdx < word.length && word[doubleNextIdx] === '+') {
+                                consChar2_1 += '꦳';
+                                consChar2_2 += '꦳';
+                                doubleNextIdx++;
+                            }
+
+                            let doubleIt = true;
+                            
+                            if (nextConsTemp.key === 'n' || nextConsTemp.key === 'N' || consChar2_1.includes('ꦟ')) {
+                                consChar2_1 = consChar2_1.replace('ꦤ', 'ꦟ');
+                                consChar2_2 = consChar2_2.replace('ꦟ', 'ꦤ');
+                            } 
+                            else if (nextConsTemp.key === 's' || nextConsTemp.key === 'sh' || consChar2_1.includes('ꦰ')) {
+                                consChar2_1 = consChar2_1.replace('ꦱ', 'ꦰ');
+                                doubleIt = false;
+                            } 
+                            else if (consChar2_1.includes('ꦡ')) {
+                                doubleIt = false;
+                            }
+                            
+                            let cons2Idx = doubleNextIdx;
+                            while(cons2Idx < word.length && (word[cons2Idx] === '-' || word[cons2Idx] === '_')) cons2Idx++;
+                            let v2Match = matchVowel(word, cons2Idx);
+
+                            if (v2Match) {
+                                let v2 = v2Match.val;
+                                if (doubleIt) {
+                                    result += consChar2_1 + '꧀' + consChar2_2 + getSandhanganVowel(v2);
+                                } else {
+                                    result += consChar2_1 + getSandhanganVowel(v2);
+                                }
+                                i = cons2Idx + v2Match.len;
+                                lastConsIsMati = false;
+                            } else {
+                                if (doubleIt) {
+                                    result += consChar2_1 + '꧀' + consChar2_2 + '꧀';
+                                } else {
+                                    result += consChar2_1 + '꧀';
+                                }
+                                i = doubleNextIdx;
+                                lastConsIsMati = true;
+                            }
+                            lastConsKey = nextConsTemp.key;
+                        } else {
+                            i = nextIdx;
+                            lastConsKey = 'r';
+                            lastConsIsMati = true;
+                        }
+                    } else {
+                        let crossVowel = nextWordToken ? matchVowel(nextWordToken.val, 0) : null;
+                        if (crossVowel) {
+                            let v = crossVowel.val;
+                            result += 'ꦫ' + getSandhanganVowel(v);
+                            nextWordToken.val = nextWordToken.val.substr(crossVowel.len);
+                            lastConsIsMati = false;
+                        } else {
+                            result += 'ꦫ꧀';
+                            lastConsIsMati = true;
+                        }
+                        i = nextIdx;
+                        lastConsKey = 'r';
+                    }
+                    continue;
+                }
+
+                if (!isWordEnd) {
+                    result += consChar + '꧀';
+                    i = nextIdx;
+                    lastConsKey = cons.key;
+                    lastConsIsMati = true;
+                } else {
+                    let handledCrossWord = false;
+
+                    if (nextWordToken && nextWordToken.val.substr(0, 2).toLowerCase() === 'le') {
+                        result += consChar + '꧀ꦊ';
+                        nextWordToken.val = nextWordToken.val.substr(2);
+                        handledCrossWord = true;
+                        lastConsKey = 'l';
+                        lastConsIsMati = false;
+                    }
+                    else if (nextWordToken && nextWordToken.val.length > 1) {
+                        let nwCons = matchConsonant(nextWordToken.val, 0);
+
+                        if (nwCons) {
+                            let afterNwConsIdx = nwCons.len;
+                            let crossVowel = matchVowel(nextWordToken.val, afterNwConsIdx);
+
+                            if (crossVowel) {
+                                let v = crossVowel.val;
+
+                                if (nwCons.key === 'r') {
+                                    if (v === 'e' || v === 'E') {
+                                        result += consChar + 'ꦽ';
+                                    } else {
+                                        result += consChar + 'ꦿ' + getSandhanganVowel(v);
+                                    }
+                                    nextWordToken.val = nextWordToken.val.substr(afterNwConsIdx + crossVowel.len);
+                                    handledCrossWord = true;
+                                    lastConsKey = 'r';
+                                    lastConsIsMati = false;
+                                } else if (nwCons.key === 'y') {
+                                    result += consChar + 'ꦾ' + getSandhanganVowel(v);
+                                    nextWordToken.val = nextWordToken.val.substr(afterNwConsIdx + crossVowel.len);
+                                    handledCrossWord = true;
+                                    lastConsKey = 'y';
+                                    lastConsIsMati = false;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!handledCrossWord) {
+                        let crossVowel = nextWordToken ? matchVowel(nextWordToken.val, 0) : null;
+                        if (crossVowel) {
+                            let v = crossVowel.val;
+                            let isNextVowelCapital = (v === v.toUpperCase() && v !== v.toLowerCase() && v !== "e'" && v !== "ex" && v !== "Ix" && v !== "ix");
+                            
+                            if (isNextVowelCapital) {
+                                result += consChar + '꧀'; 
+                                lastConsIsMati = true;
+                            } else {
+                                result += consChar + getSandhanganVowel(v); 
+                                nextWordToken.val = nextWordToken.val.substr(crossVowel.len);
+                                lastConsIsMati = false;
+                            }
+                        } else {
+                            result += consChar + '꧀';
+                            lastConsIsMati = true;
+                        }
+                    }
+
+                    i = nextIdx;
+                    if (!handledCrossWord) {
+                        lastConsKey = cons.key;
+                    }
+                }
+                continue;
+            }
+
+            let vMatch = matchVowel(word, i);
+            if (vMatch) {
+                result += getMandarinVowel(vMatch.val);
+
+                let afterVowelIdx = i + vMatch.len;
+                while(afterVowelIdx < word.length && (word[afterVowelIdx] === '-' || word[afterVowelIdx] === '_')) {
+                    afterVowelIdx++;
+                }
                 
-                if (c === 'k' && (lowerLatin.substring(i - 3, i) === 'dak' || lowerLatin.substring(i - 3, i) === 'tak')) {
-                    rejectMedial = true;
-                }
+                let nextV2 = matchVowel(word, afterVowelIdx);
+                if (nextV2) {
+                    let v1 = vMatch.val;
+                    let v2 = nextV2.val;
 
-                if (rejectMedial) { 
-                    medial = ""; 
-                } else { 
-                    medial = lowerLatin[i]; 
-                    i++; 
-                }
-            } else if (c === 'h') {
-                c = lowerLatin[i]; i++;
-            }
-        }
-
-        let v = "";
-        if (!isSwara && i < lowerLatin.length && /[aieéèêou]/.test(lowerLatin[i])) {
-            v = lowerLatin[i]; i++;
-        }
-
-        let canTakeSandhangan = !/([꧀ꦁꦂꦃ\u200C]|^)$/.test(res);
-
-        if (medial !== "") {
-            let isExplicitX = (c3_raw.toLowerCase() === 'ngx' || c2_raw.toLowerCase() === 'hx' || c2_raw.toLowerCase() === 'rx' || c2_raw.toLowerCase() === 'kx');
-            
-            if (!isExplicitX && !isFirstAksara && canTakeSandhangan) {
-                if (c === 'ng') {
-                    if (!(isKataNingrat && medial === 'r')) {
-                        res += 'ꦁ'; c = medial; medial = "";
+                    if (['i', 'I', 'é', 'è', 'E', 'ii', 'II', "e'", 'ex'].includes(v1)) {
+                        result += 'ꦪ' + getSandhanganVowel(v2);
+                    } else if (['u', 'U', 'o', 'O', 'uu', 'UU'].includes(v1)) {
+                        result += 'ꦮ' + getSandhanganVowel(v2);
+                    } else {
+                        result += 'ꦲ' + getSandhanganVowel(v2);
                     }
-                } else if (c === 'r') {
-                    res += 'ꦂ'; c = medial; medial = "";
-                } else if (c === 'h') {
-                    res += 'ꦃ'; c = medial; medial = "";
+                    i = afterVowelIdx + nextV2.len;
+                    continue;
                 }
+
+                i += vMatch.len;
+                continue;
             }
+
+            result += c;
+            i++;
         }
-
-        if (v === "" && !isSwara) {
-            if (c === 'ng' && !isFirstAksara && canTakeSandhangan) res += 'ꦁ'; 
-            else if (c === 'r' && !isFirstAksara && canTakeSandhangan) res += 'ꦂ'; 
-            else if (c === 'h' && !isFirstAksara && canTakeSandhangan) res += 'ꦃ'; 
-            else if (c !== "") {
-                let base = (c === 'dh' && res.endsWith('꧀')) ? AKSARA_MURDA['dh'] : (isMurda ? AKSARA_MURDA[c] : KAMUS_AKSARA[c]);
-                res += base + '꧀'; 
-            }
-            
-            if (medial !== "") res += KAMUS_AKSARA[medial] + '꧀';
-            if (c !== "") isFirstAksara = false;
-            continue;
-        }
-
-        let nonPasangan = ['kh','dz','gh','z'].includes(c) || isSwara;
-        if (nonPasangan && res.endsWith('꧀')) res += '\u200C';
-
-        if (c === 'l' && (v === 'e' || v === 'ê') && medial === "") {
-            res += 'ꦊ'; 
-        } else if (c === 'r' && (v === 'e' || v === 'ê') && medial === "") {
-            res += 'ꦉ'; 
-        } else {
-            let base = (c === 'dh' && res.endsWith('꧀')) ? AKSARA_MURDA['dh'] : (isSwara ? SWARA_MAP[c] : (isMurda ? AKSARA_MURDA[c] : KAMUS_AKSARA[c]));
-            res += base;
-
-            if (medial === 'y') res += 'ꦾ';
-            else if (medial === 'r') {
-                if (v === 'e' || v === 'ê') { res += 'ꦽ'; v = ''; } 
-                else res += 'ꦿ'; 
-            }
-
-            if (!isSwara) {
-                if (v === 'i') res += 'ꦶ';
-                else if (v === 'u') res += 'ꦸ';
-                else if (v === 'é' || v === 'è') res += 'ꦺ';
-                else if (v === 'e' || v === 'ê') res += 'ꦼ';
-                else if (v === 'o') res += 'ꦺꦴ';
-            }
-        }
-        
-        if (c !== "") isFirstAksara = false;
     }
-    return res;
+
+    return result;
 }
+
+function updatePreview() {
+    const latinText = textInput.value;
+    const jawaText = transliterateKawi(latinText);
+    previewOutput.textContent = jawaText;
+    charCount.textContent = `Jumlah Karakter: ${jawaText.length}`;
+}
+
+fontSelect.addEventListener('change', (e) => {
+    previewOutput.style.fontFamily = `'${e.target.value}', sans-serif`;
+});
+
+textInput.addEventListener('input', updatePreview);
+
+fontSizeRange.addEventListener('input', (e) => {
+    const size = e.target.value;
+    fontSizeVal.textContent = size;
+    previewOutput.style.fontSize = size + 'px';
+});
+
+lineHeightRange.addEventListener('input', (e) => {
+    const height = e.target.value;
+    lineHeightVal.textContent = height;
+    previewOutput.style.lineHeight = height;
+});
+
+copyBtn.addEventListener('click', () => {
+    const textToCopy = previewOutput.textContent;
+    if (!textToCopy) return;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        alert('Aksara Jawa berhasil disalin ke papan klip.');
+    });
+});
+
+clearBtn.addEventListener('click', () => {
+    textInput.value = '';
+    updatePreview();
+    textInput.focus();
+});
+
+updatePreview();
