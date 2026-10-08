@@ -31,8 +31,8 @@
         table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); table-layout: auto; }
         th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: middle; }
         
-        /* Penyeragaman Warna Judul Kolom (Semua Putih) */
-        th { background-color: #0056b3; color: #fff; font-weight: bold; position: sticky; top: 0; z-index: 10; }
+        /* Penyeragaman Header Kolom (Selalu Terlihat dan Berwarna Putih) */
+        th { background-color: #0056b3; color: #ffffff !important; font-weight: bold; position: sticky; top: 0; z-index: 10; }
         
         tr:hover { background-color: #f1f1f1; }
         .code { font-family: monospace; background: #e9ecef; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem;}
@@ -93,8 +93,11 @@
             line-height: 1.5;
         }
 
-        /* Kelas Sembunyi Kolom secara Dinamis */
-        .col-hidden { display: none !important; }
+        /* Kelas Sembunyi Sel Data (tbody) Secara Dinamis */
+        tbody td.col-hidden { display: none !important; }
+        
+        /* Proteksi Header (th) Agar Selalu Tampil */
+        th.col-hidden { display: table-cell !important; }
     </style>
 </head>
 <body>
@@ -122,7 +125,7 @@
                     <li><input type="checkbox" checked disabled /> <label style="color:#888;">Input Latin</label></li>
                     <li><input type="checkbox" id="chk_sriwedari" checked onchange="toggleColumnVisibility('col-sriwedari', this.checked)" /> <label for="chk_sriwedari">Sriwedari/KBJ</label></li>
                     <li><input type="checkbox" id="chk_simplified" checked onchange="toggleColumnVisibility('col-simplified', this.checked)" /> <label for="chk_simplified">Simplified</label></li>
-                    <li><input type="checkbox" id="chk_kawi" checked onchange="toggleColumnVisibility('col-kawi', this.checked)" /> <label for="chk_kawi">Mardi Kawi</label></li>
+                    <li><input type="checkbox" id="chk_kawi" checked onchange="toggleColumnVisibility('col-kawi', this.checked)" /> <label for="chk_kawi">Cara Kawi</label></li>
                     <li><input type="checkbox" id="chk_tradisional" checked onchange="toggleColumnVisibility('col-tradisional', this.checked)" /> <label for="chk_tradisional">Tradisional</label></li>
                     <li><input type="checkbox" id="chk_unicode" checked onchange="toggleColumnVisibility('col-unicode', this.checked)" /> <label for="chk_unicode">Unicode</label></li>
                     <li><input type="checkbox" id="chk_ipa" checked onchange="toggleColumnVisibility('col-ipa', this.checked)" /> <label for="chk_ipa">IPA</label></li>
@@ -166,7 +169,7 @@
                 <th class="col-latin">Input Latin</th>
                 <th class="col-sriwedari">Sriwedari / KBJ</th>
                 <th class="col-simplified">Simplified</th>
-                <th class="col-kawi">Mardi Kawi</th>
+                <th class="col-kawi">Cara Kawi</th>
                 <th class="col-tradisional">Tradisional</th>
                 <th class="col-unicode">Unicode</th>
                 <th class="col-ipa">IPA</th>
@@ -300,17 +303,15 @@
         });
 
         function updateSectionColspan() {
-            // Hitung berapa kolom yang sedang tidak disembunyikan
             const allCols = ['col-latin', 'col-sriwedari', 'col-simplified', 'col-kawi', 'col-tradisional', 'col-unicode', 'col-ipa', 'col-jgst'];
             let visibleCount = 0;
             allCols.forEach(col => {
-                const sample = document.querySelector('th.' + col);
+                const sample = document.querySelector('tbody td.' + col);
                 if (sample && !sample.classList.contains('col-hidden')) {
                     visibleCount++;
                 }
             });
 
-            // Sesuaikan colspan pada elemen header kategori
             const sectionCells = document.querySelectorAll('.section-row-cell');
             sectionCells.forEach(cell => {
                 cell.setAttribute('colspan', visibleCount || 1);
@@ -318,7 +319,8 @@
         }
 
         function toggleColumnVisibility(className, show) {
-            const elements = document.querySelectorAll('.' + className);
+            // Hanya menargetkan sel di tbody agar header th di thead tidak tersembunyi
+            const elements = document.querySelectorAll('tbody td.' + className);
             elements.forEach(el => {
                 if (show) {
                     el.classList.remove('col-hidden');
