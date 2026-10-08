@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Harmonisasi Tata Tulis Aksara Jawa</title>
     <style>
+        /* Import Font Noto Sans */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+
         /* Deklarasi Font Lokal di Root Folder */
         @font-face {
             font-family: 'NgayogyanN';
@@ -31,8 +34,18 @@
         table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); table-layout: auto; }
         th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: middle; }
         
-        /* Penyeragaman Header Kolom */
-        th { background-color: #0056b3; color: #ffffff !important; font-weight: bold; position: sticky; top: 0; z-index: 10; }
+        /* Pengaturan Seragam untuk Seluruh Judul Kolom (Header) */
+        th, th[class*="col-"] { 
+            font-family: 'Noto Sans', sans-serif !important; 
+            font-size: 1rem !important; 
+            background-color: #0056b3; 
+            color: #ffffff !important; 
+            font-weight: bold; 
+            position: sticky; 
+            top: 0; 
+            z-index: 10; 
+            line-height: 1.4 !important;
+        }
         
         tr:hover { background-color: #f1f1f1; }
         .code { font-family: monospace; background: #e9ecef; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem;}
@@ -47,27 +60,27 @@
         .dropdown-check-list ul.items li { margin-bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; cursor: pointer; }
         .dropdown-check-list.visible .items { display: block; }
 
-        /* Pengaturan Font Default Per Kolom */
-        .font-default .col-sriwedari, 
-        .font-default .col-simplified { 
+        /* Pengaturan Font Default Per Kolom Data (tbody) */
+        .font-default tbody .col-sriwedari, 
+        .font-default tbody .col-simplified { 
             font-family: 'NgayogyanN', 'Noto Sans Javanese', sans-serif; 
             font-size: 1.5rem; 
             color: #0056b3; 
             line-height: 1.5;
         }
-        .font-default .col-kawi, 
-        .font-default .col-tradisional { 
+        .font-default tbody .col-kawi, 
+        .font-default tbody .col-tradisional { 
             font-family: 'Ngayogyan', 'Noto Sans Javanese', sans-serif; 
             font-size: 1.5rem; 
             color: #0056b3; 
             line-height: 1.5;
         }
-        .col-ipa { 
+        tbody .col-ipa { 
             font-family: 'Charis', sans-serif; 
             font-size: 1.25rem; 
             line-height: 1.6;  
         }
-        .col-jgst { 
+        tbody .col-jgst { 
             font-family: 'Gentium', serif; 
             color: #d9534f; 
             font-weight: bold; 
@@ -75,19 +88,19 @@
             line-height: 1.6;  
         }
 
-        /* Pengaturan Saat Noto Sans Javanese Dipilih */
-        .font-noto .col-sriwedari, 
-        .font-noto .col-simplified, 
-        .font-noto .col-kawi, 
-        .font-noto .col-tradisional, 
-        .font-noto .col-ipa, 
-        .font-noto .col-jgst { 
+        /* Pengaturan Saat Mode Noto Sans Javanese Dipilih untuk Isi Data (tbody) */
+        .font-noto tbody .col-sriwedari, 
+        .font-noto tbody .col-simplified, 
+        .font-noto tbody .col-kawi, 
+        .font-noto tbody .col-tradisional, 
+        .font-noto tbody .col-ipa, 
+        .font-noto tbody .col-jgst { 
             font-family: 'Noto Sans Javanese', sans-serif; 
         }
-        .font-noto .col-sriwedari, 
-        .font-noto .col-simplified, 
-        .font-noto .col-kawi, 
-        .font-noto .col-tradisional { 
+        .font-noto tbody .col-sriwedari, 
+        .font-noto tbody .col-simplified, 
+        .font-noto tbody .col-kawi, 
+        .font-noto tbody .col-tradisional { 
             font-size: 1.5rem; 
             color: #0056b3; 
             line-height: 1.5;
@@ -291,7 +304,6 @@
             checkList.classList.toggle('visible');
         }
 
-        // Menutup dropdown jika mengklik di luar area menu
         document.addEventListener('click', function(e) {
             const checkList = document.getElementById('listColToggle');
             if (!checkList.contains(e.target)) {
@@ -316,7 +328,6 @@
         }
 
         function toggleColumnVisibility(className, show) {
-            // Sembunyikan/Tampilkan th dan td bersama-sama
             const elements = document.querySelectorAll('.' + className);
             elements.forEach(el => {
                 if (show) {
@@ -326,7 +337,6 @@
                 }
             });
 
-            // Sinkronkan state Checkbox
             const chkMap = {
                 'col-sriwedari': 'chk_sriwedari',
                 'col-simplified': 'chk_simplified',
@@ -412,7 +422,6 @@
                 tbody.appendChild(tr);
             });
 
-            // Terpeliharanya Visibilitas & Ukuran Diakritik
             const presetVal = document.getElementById('presetView').value;
             applyPresetView(presetVal);
 
