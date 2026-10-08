@@ -9,7 +9,7 @@ Panduan interaktif untuk pengetikan dan harmonisasi tata tulis Aksara Jawa — m
 ![Harmonisasi Aksara](https://img.shields.io/badge/Harmonisasi-Aksara-%230056b3?style=for-the-badge)
 
 ![License](https://img.shields.io/badge/license-KANDANGJAGO-green?style=flat-square)
-![Made in Yogyakarta](https://img.shields.io/badge/Made%20in-Yogyakarta-red?style=flat-square)
+![Made in Yogyakarta](https://img.shields.io/badge/Made%20in-Yogyakarta-sea-blue?style=flat-square)
 
 ---
 
