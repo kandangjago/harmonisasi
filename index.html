@@ -5,35 +5,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Harmonisasi Tata Tulis Aksara Jawa</title>
     <style>
+        /* Deklarasi Font Lokal di Root Folder */
+        @font-face {
+            font-family: 'NgayogyanN';
+            src: url('ngayogyann.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'Ngayogyan';
+            src: url('ngayogyan.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'Charis';
+            src: url('charis.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'Gentium';
+            src: url('gentium.ttf') format('truetype');
+        }
+
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f8f9fa; color: #333; }
         h1 { font-size: 1.5rem; border-bottom: 2px solid #0056b3; padding-bottom: 10px; }
-        .controls { margin: 20px 0; display: flex; gap: 15px; align-items: center; }
+        .controls { margin: 20px 0; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+        .control-group { display: flex; gap: 8px; align-items: center; }
         select { padding: 8px 12px; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc; }
         table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background-color: #0056b3; color: #fff; font-weight: bold; position: sticky; top: 0; }
         tr:hover { background-color: #f1f1f1; }
-        .aksara { font-family: 'Noto Sans Javanese', sans-serif; font-size: 1.5rem; color: #0056b3; }
         .code { font-family: monospace; background: #e9ecef; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem;}
-        .jgst { color: #d9534f; font-weight: bold; font-family: monospace; }
         .section-row { background-color: #e2e8f0; font-weight: bold; text-align: center; }
         .dash { color: #999; font-weight: normal; }
+
+        /* Pengaturan Font Default Per Kolom */
+        .font-default .col-sriwedari, 
+        .font-default .col-simplified { 
+            font-family: 'NgayogyanN', 'Noto Sans Javanese', sans-serif; 
+            font-size: 1.5rem; 
+            color: #0056b3; 
+        }
+        .font-default .col-kawi, 
+        .font-default .col-tradisional { 
+            font-family: 'Ngayogyan', 'Noto Sans Javanese', sans-serif; 
+            font-size: 1.5rem; 
+            color: #0056b3; 
+        }
+        .font-default .col-ipa { 
+            font-family: 'Charis', sans-serif; 
+        }
+        .font-default .col-jgst { 
+            font-family: 'Gentium', serif; 
+            color: #d9534f; 
+            font-weight: bold; 
+        }
+
+        /* Pengaturan Saat Noto Sans Javanese Dipilih */
+        .font-noto .col-sriwedari, 
+        .font-noto .col-simplified, 
+        .font-noto .col-kawi, 
+        .font-noto .col-tradisional, 
+        .font-noto .col-ipa, 
+        .font-noto .col-jgst { 
+            font-family: 'Noto Sans Javanese', sans-serif; 
+        }
+        .font-noto .col-sriwedari, 
+        .font-noto .col-simplified, 
+        .font-noto .col-kawi, 
+        .font-noto .col-tradisional { 
+            font-size: 1.5rem; 
+            color: #0056b3; 
+        }
+        .font-noto .col-jgst { 
+            color: #d9534f; 
+            font-weight: bold; 
+        }
     </style>
 </head>
 <body>
 
     <h1>Panduan Pengetikan: Harmonisasi Tata Tulis Aksara Jawa</h1>
     <div class="controls">
-        <label for="sortOrder"><strong>Pilih Kategori / Urutan:</strong></label>
-        <select id="sortOrder" onchange="renderTable()">
-            <option value="kategori">Berdasarkan Kategori (Wyanjana, Murda, Swara, Rekan)</option>
-            <option value="alphabet">Alfabet Latin (A-Z)</option>
-            <option value="hanacaraka">Urutan Hanacaraka</option>
-            <option value="kawi">Warga Aksara (KaKhaGaGhaNga)</option>
-        </select>
+        <div class="control-group">
+            <label for="sortOrder"><strong>Pilih Kategori / Urutan:</strong></label>
+            <select id="sortOrder" onchange="renderTable()">
+                <option value="kategori">Berdasarkan Kategori (Wyanjana, Murda, Swara, Rekan)</option>
+                <option value="alphabet">Alfabet Latin (A-Z)</option>
+                <option value="hanacaraka">Urutan Hanacaraka</option>
+                <option value="kawi">Warga Aksara (KaKhaGaGhaNga)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="fontSelect"><strong>Pilih Font Mode:</strong></label>
+            <select id="fontSelect" onchange="updateFontMode()">
+                <option value="font-default">Font Default</option>
+                <option value="font-noto">Noto Sans Javanese</option>
+            </select>
+        </div>
     </div>
 
-    <table id="mappingTable">
+    <table id="mappingTable" class="font-default">
         <thead>
             <tr>
                 <th>Input Latin</th>
@@ -138,6 +208,12 @@
             return val === '-' ? '<span class="dash">-</span>' : val;
         }
 
+        function updateFontMode() {
+            const fontMode = document.getElementById('fontSelect').value;
+            const table = document.getElementById('mappingTable');
+            table.className = fontMode;
+        }
+
         function renderTable() {
             const mode = document.getElementById('sortOrder').value;
             let sortedData = [...aksaraData];
@@ -166,13 +242,13 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><span class="code">${item.lat}</span></td>
-                    <td class="aksara">${formatVal(item.kbj)}</td>
-                    <td class="aksara">${formatVal(item.simp)}</td>
-                    <td class="aksara">${formatVal(item.mk)}</td>
-                    <td class="aksara">${formatVal(item.trad)}</td>
+                    <td class="col-sriwedari">${formatVal(item.kbj)}</td>
+                    <td class="col-simplified">${formatVal(item.simp)}</td>
+                    <td class="col-kawi">${formatVal(item.mk)}</td>
+                    <td class="col-tradisional">${formatVal(item.trad)}</td>
                     <td><span class="code">${item.uni}</span></td>
-                    <td>${item.ipa}</td>
-                    <td class="jgst">${item.jgst}</td>
+                    <td class="col-ipa">${item.ipa}</td>
+                    <td class="col-jgst">${item.jgst}</td>
                 `;
                 tbody.appendChild(tr);
             });
