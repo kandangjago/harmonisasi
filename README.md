@@ -89,5 +89,12 @@ Saat ini `Aksara Jawa` mencakup:
 
 ![Made in Yogyakarta](https://img.shields.io/badge/Made%20❤️-Yogyakarta-red?style=for-the-badge)
 
+![Aksara Jawa](https://img.shields.io/badge/Aksara-Jawa-0D2C54?style=for-the-badge&labelColor=C6A664&color=0D2C54)
+
+![Harmonisasi](https://img.shields.io/badge/Harmonisasi-Aksara_Jawa-C6A664?style=for-the-badge&labelColor=0D2C54&color=C6A664)
+
+![License](https://img.shields.io/badge/license-MIT-5D4037?style=flat-square&labelColor=0D2C54)
+
+![Yogyakarta](https://img.shields.io/badge/Made%20in-Yogyakarta-7A2A1D?style=flat-square&labelColor=FDF6E3)
 
 > Jika kamu menggunakan project ini untuk skripsi, workshop, atau muatan lokal sekolah, jangan lupa cantumkan link ini ya!
