@@ -85,4 +85,4 @@ Saat ini `Aksara Jawa` mencakup:
 
 **Matur nuwun** — Dibuat dengan ❤️ dari Yogyakarta untuk pelestarian Aksara Jawa di era digital.
 
-> Jika kamu menggunakan project ini untuk skripsi, workshop, atau muatan lokal sekolah, jangan lupa cantumkan link repo ini ya!
+> Jika kamu menggunakan project ini untuk skripsi, workshop, atau muatan lokal sekolah, jangan lupa cantumkan link ini ya!
