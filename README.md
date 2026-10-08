@@ -87,4 +87,7 @@ Saat ini `Aksara Jawa` mencakup:
 
 **Matur nuwun** — Dibuat dengan ❤️ dari Yogyakarta untuk pelestarian Aksara Jawa di era digital.
 
+![Made in Yogyakarta](https://img.shields.io/badge/Made%20❤️-Yogyakarta-red?style=flat-square)
+
+
 > Jika kamu menggunakan project ini untuk skripsi, workshop, atau muatan lokal sekolah, jangan lupa cantumkan link ini ya!
