@@ -31,7 +31,7 @@
         table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); table-layout: auto; }
         th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: middle; }
         
-        /* Penyeragaman Header Kolom (Selalu Terlihat dan Berwarna Putih) */
+        /* Penyeragaman Header Kolom */
         th { background-color: #0056b3; color: #ffffff !important; font-weight: bold; position: sticky; top: 0; z-index: 10; }
         
         tr:hover { background-color: #f1f1f1; }
@@ -93,11 +93,8 @@
             line-height: 1.5;
         }
 
-        /* Kelas Sembunyi Sel Data (tbody) Secara Dinamis */
-        tbody td.col-hidden { display: none !important; }
-        
-        /* Proteksi Header (th) Agar Selalu Tampil */
-        th.col-hidden { display: table-cell !important; }
+        /* Kelas Sembunyi Kolom (Berlaku untuk th dan td) */
+        .col-hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -306,8 +303,8 @@
             const allCols = ['col-latin', 'col-sriwedari', 'col-simplified', 'col-kawi', 'col-tradisional', 'col-unicode', 'col-ipa', 'col-jgst'];
             let visibleCount = 0;
             allCols.forEach(col => {
-                const sample = document.querySelector('tbody td.' + col);
-                if (sample && !sample.classList.contains('col-hidden')) {
+                const sampleHeader = document.querySelector('th.' + col);
+                if (sampleHeader && !sampleHeader.classList.contains('col-hidden')) {
                     visibleCount++;
                 }
             });
@@ -319,8 +316,8 @@
         }
 
         function toggleColumnVisibility(className, show) {
-            // Hanya menargetkan sel di tbody agar header th di thead tidak tersembunyi
-            const elements = document.querySelectorAll('tbody td.' + className);
+            // Sembunyikan/Tampilkan th dan td bersama-sama
+            const elements = document.querySelectorAll('.' + className);
             elements.forEach(el => {
                 if (show) {
                     el.classList.remove('col-hidden');
