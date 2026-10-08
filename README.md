@@ -45,8 +45,8 @@ Custom multiselect dropdown untuk hide/show kolom individual tanpa reload.
 
 **5. Font Mode**
 - `Font Default`:
-  - `NgayogyanN` untuk Sriwedari & Simplified
-  - `Ngayogyan` untuk Kawi & Tradisional
+  - `Ngayogyan New` untuk Sriwedari & Simplified
+  - `Ngayogyan Old` untuk Kawi & Tradisional
   - `Charis` untuk IPA
   - `Gentium` untuk JGST (merah, bold)
 - `Noto Sans Javanese` - Mode komparasi universal Google Noto
