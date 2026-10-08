@@ -2,7 +2,7 @@
 
 Panduan interaktif untuk pengetikan dan harmonisasi tata tulis Aksara Jawa — membandingkan berbagai sistem penulisan dari Sriwedari/KBJ, Simplified, Cara Kawi, hingga Tradisional dalam satu tabel terpadu.
 
-> **Live Demo:** `https://username.github.io/nama-repo/` — aktifkan GitHub Pages dari branch `main` / folder `root`
+> **Live Demo:** [`https://www.kandangjago.com`](https://www.kandangjago.com)
 
 [Aksara Jawa](https://img.shields.io/badge/Aksara-Jawa-%230056b3?style=for-the-badge)
 [License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
