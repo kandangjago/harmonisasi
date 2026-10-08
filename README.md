@@ -76,14 +76,13 @@ Saat ini `Aksara Jawa` mencakup:
 
 ### 📜 Lisensi & Atribusi Font
 
-- Kode `index.html` ini: **MIT License** - bebas pakai untuk edukasi & pengembangan
 - Font:
-  - `Ngayogyan` & `NgayogyanN` - karya komunitas Aksara Jawa
-  - `Charis SIL` & `Gentium` - SIL International (SIL Open Font License)
+  - `Ngayogyan New` & `Ngayogyan Old` - karya komunitas Aksara Jawa
+  - `Charis SIL` & `Gentium Plus` - SIL International (SIL Open Font License)
   - `Noto Sans Javanese` - Google (OFL)
 
 ---
 
-**Matur nuwun** — Dibuat dengan ❤️ dari Sewon, Yogyakarta untuk pelestarian Aksara Jawa di era digital.
+**Matur nuwun** — Dibuat dengan ❤️ dari Yogyakarta untuk pelestarian Aksara Jawa di era digital.
 
 > Jika kamu menggunakan project ini untuk skripsi, workshop, atau muatan lokal sekolah, jangan lupa cantumkan link repo ini ya!
