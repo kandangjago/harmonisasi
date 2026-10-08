@@ -1,6 +1,6 @@
 /**
  * SIMPLIFIED.JS
- * Modifikasi dari kbj.js untuk mendukung tambahan Aksara Rekan, Aksara Murda, dan Aksara Swara (termasuk AI & AU).
+ * Modifikasi dari kbj.js untuk mendukung tambahan Aksara Rekan, Aksara Murda, dan Aksara Swara (Pendek & Panjang).
  *
  * PANDUAN PENGETIKAN AKSARA REKAN BARU (Berdasarkan Pelafalan IPA Arab):
  * q   -> ꦐ (ق) - IPA: /q/
@@ -18,9 +18,13 @@
  * C -> ꦖ
  * R -> ꦬ
  * 
- * TAMBAHAN AKSARA SWARA:
- * AI -> ꦍ
- * AU -> ꦎꦴ
+ * TAMBAHAN AKSARA SWARA (Pendek & Panjang/Dirgha):
+ * A -> ꦄ,  AA -> ꦄꦴ
+ * I -> ꦆ,  II -> ꦇ
+ * U -> ꦈ,  UU -> ꦈꦴ
+ * AI -> ꦍ, AU -> ꦎꦴ
+ * RE -> ꦉ, REE -> ꦉꦴ
+ * LE -> ꦊ, LEE -> ꦋ
  */
 
 const KAMUS_AKSARA = {
@@ -52,8 +56,13 @@ const AKSARA_MURDA = {
 };
 
 const SWARA_MAP = {
-    'A':'ꦄ', 'I':'ꦆ', 'U':'ꦈ', 'E':'ꦄꦼ', 'É':'ꦌ', 'È':'ꦌ', 'Ê':'ꦄꦼ', 'O':'ꦎ',
-    'AI':'ꦍ', 'AU':'ꦎꦴ' // Penambahan Aksara Swara AI dan AU
+    'A':'ꦄ', 'AA':'ꦄꦴ',
+    'I':'ꦆ', 'II':'ꦇ',
+    'U':'ꦈ', 'UU':'ꦈꦴ',
+    'E':'ꦄꦼ', 'É':'ꦌ', 'È':'ꦌ', 'Ê':'ꦄꦼ', 'O':'ꦎ',
+    'AI':'ꦍ', 'AU':'ꦎꦴ',
+    'RE':'ꦉ', 'REE':'ꦉꦴ',
+    'LE':'ꦊ', 'LEE':'ꦋ'
 };
 
 const ANGKA = ['꧐','꧑','꧒','꧓','꧔','꧕','꧖','꧗','꧘','꧙'];
@@ -414,7 +423,7 @@ function transliterasiKalimat(teks) {
         let lineJoined = kataJawa.join(''); 
         
         lineJoined = lineJoined.replace(/꧀ꦊ/g, '꧀ꦭꦼ');
-        lineJoined = lineJoined.replace(/꧀([ꦄꦆꦈꦌꦎꦍ])/g, '꧀\u200C$1');
+        lineJoined = lineJoined.replace(/꧀([ꦄꦆꦈꦌꦎꦍꦇꦋ])/g, '꧀\u200C$1');
 
         lineJoined = lineJoined.replace(/([ꦀ-꧟])꧀([ꦀ-꧟])(꦳?)꧀([ꦀ-꧟])/g, function(match, p1, p2, p3, p4) {
             if (p2 === 'ꦥ' || p2 === 'ꦱ') return match; 
@@ -558,6 +567,7 @@ function transliterasiSingleKata(rawLatin) {
         let isSwara = false;
         let isMurda = false;
 
+        let c4_raw = i+3 < latin.length ? latin.substring(i, i+4) : "";
         let c3_raw = i+2 < latin.length ? latin.substring(i, i+3) : "";
         let c2_raw = i+1 < latin.length ? latin.substring(i, i+2) : "";
         let c1_raw = latin[i];
@@ -566,11 +576,25 @@ function transliterasiSingleKata(rawLatin) {
         let c2 = c2_raw.toLowerCase();
         let c1 = c1_raw.toLowerCase();
 
-        // Pengecekan 2 karakter untuk Aksara Swara Gabungan (AI & AU)
-        if (['AI', 'Ai', 'ai'].includes(c2_raw) && SWARA_MAP['AI']) {
+        // Pengecekan Aksara Swara Panjang & Gabungan (3-4 Karakter)
+        if (['REE', 'Ree', 'ree'].includes(c3_raw) && SWARA_MAP['REE']) {
+            c = 'REE'; isSwara = true; jump = 3;
+        } else if (['LEE', 'Lee', 'lee'].includes(c3_raw) && SWARA_MAP['LEE']) {
+            c = 'LEE'; isSwara = true; jump = 3;
+        } else if (['AA', 'Aa', 'aa'].includes(c2_raw) && SWARA_MAP['AA']) {
+            c = 'AA'; isSwara = true; jump = 2;
+        } else if (['II', 'Ii', 'ii'].includes(c2_raw) && SWARA_MAP['II']) {
+            c = 'II'; isSwara = true; jump = 2;
+        } else if (['UU', 'Uu', 'uu'].includes(c2_raw) && SWARA_MAP['UU']) {
+            c = 'UU'; isSwara = true; jump = 2;
+        } else if (['AI', 'Ai', 'ai'].includes(c2_raw) && SWARA_MAP['AI']) {
             c = 'AI'; isSwara = true; jump = 2;
         } else if (['AU', 'Au', 'au'].includes(c2_raw) && SWARA_MAP['AU']) {
             c = 'AU'; isSwara = true; jump = 2;
+        } else if (['RE', 'Re', 're'].includes(c2_raw) && SWARA_MAP['RE']) {
+            c = 'RE'; isSwara = true; jump = 2;
+        } else if (['LE', 'Le', 'le'].includes(c2_raw) && SWARA_MAP['LE']) {
+            c = 'LE'; isSwara = true; jump = 2;
         } else if ((c2_raw === 'NY' || c2_raw === 'Ny') && AKSARA_MURDA['ny']) {
             c = 'ny'; jump = 2; isMurda = true;
         } else if (c1_raw === 'J' && AKSARA_MURDA['j']) {
