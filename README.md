@@ -56,49 +56,15 @@ Slider 1.0rem – 2.0rem untuk riset diakritik yang presisi.
 
 ---
 
-### 📁 Struktur File
-
-Untuk GitHub Pages, pastikan struktur repo seperti ini:
-
-```
-/ (root)
-├── index.html              # file yang kamu upload ini
-├── README.md               # file ini
-├── ngayogyan.ttf           # Font Kawi & Tradisional
-├── ngayogyann.ttf          # Font Sriwedari/KBJ & Simplified
-├── charis.ttf              # Font IPA (Charis SIL)
-└── gentium.ttf             # Font JGST (Gentium)
-```
-
-> **Penting:** Keempat file `.ttf` harus ada di root folder yang sama dengan `index.html`, sesuai deklarasi `@font-face` di CSS. Tanpa itu, aksara akan fallback ke Noto Sans Javanese.
-
-### 🚀 Cara Deploy ke GitHub Pages
-
-1.  Buat repo baru, misal `harmonisasi-aksara-jawa`
-2.  Upload `index.html` + 4 file font `.ttf` + `README.md` ini
-3.  Masuk ke **Settings > Pages**
-4.  Source: `Deploy from a branch` → Branch: `main` → Folder: `/ (root)`
-5.  Save. Tunggu 1-2 menit, link demo kamu akan jadi: `https://username.github.io/harmonisasi-aksara-jawa/`
-
 ### 🧩 Data yang Dicakup
 
-Saat ini `aksaraData` di dalam `index.html` mencakup:
+Saat ini `Aksara Jawa` mencakup:
 
 - **Wyanjana (Nglegena):** h, n, c, r, k, d, t, s, w, l, p, dh, j, y, ny, m, g, b, th, ng
 - **Murda (Kapital):** N, K, T, S, P, D, C, R, DH
 - **Mahaprana & Varian:** kh (ꦑ), gh (ꦓ), ch, Th/thh, Dh/dhh, dH, sy (ꦯ), sh (ꦰ)
 - **Rekan (Arab & Serapan):** f, v, z, dz, q, hh, xng, ts, shh, xsy, dl, tth, zh, x
 - **Swara (Vokal Mandiri):** A, AA, I, II, Ix, U, UU, E Pepet, É/È Taling, O, AI, AU, RE Pa Cerek, REE, LE Nga Lelet, LEE
-
-Setiap baris menyimpan: `cat, id, lat, kbj, simp, mk, trad, uni, ipa, jgst, hana, warga`
-
-### 🛠️ Teknologi
-
-- Pure HTML5 + CSS3 + Vanilla JavaScript (tanpa framework)
-- `position: sticky` header untuk tabel panjang
-- Custom dropdown multiselect tanpa library
-- Responsive controls dengan `flex-wrap`
-- Import `Noto Sans` dari Google Fonts sebagai fallback
 
 ### 🎯 Rencana Pengembangan
 
@@ -107,14 +73,6 @@ Setiap baris menyimpan: `cat, id, lat, kbj, simp, mk, trad, uni, ipa, jgst, hana
 - [ ] Tombol copy aksara & copy unicode
 - [ ] Export ke CSV / JSON
 - [ ] Mode gelap (dark mode)
-
-### 🤝 Kontribusi
-
-Sangat terbuka! Aksara Jawa adalah warisan bersama. Jika ada koreksi penulisan, tambahan aksara, atau perbaikan transliterasi IPA/JGST, silakan:
-
-1. Fork repo ini
-2. Edit array `aksaraData` di `index.html`
-3. Buat Pull Request dengan sumber rujukan (misal: Kamus KBJ, Unicode 15.0 Javanese block)
 
 ### 📜 Lisensi & Atribusi Font
 
