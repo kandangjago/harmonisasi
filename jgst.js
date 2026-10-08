@@ -111,7 +111,8 @@ const rekanMap = {
   '\uA9A1\uA9B3': 'ṭ',
   '\uA9A3\uA9B3': 'ẓ',
   '\uA98F\uA9B3': 'x',
-  '\uA990\uA9B3': 'x'
+  '\uA990\uA9B3': 'x',
+  '\uA991\uA9B3': 'x'
 };
 
 function transliterateToJGST(text) {
