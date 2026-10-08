@@ -25,12 +25,12 @@
 
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f8f9fa; color: #333; }
         h1 { font-size: 1.5rem; border-bottom: 2px solid #0056b3; padding-bottom: 10px; }
-        .controls { margin: 20px 0; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+        .controls { margin: 20px 0; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; background: #fff; padding: 15px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .control-group { display: flex; gap: 8px; align-items: center; }
-        select { padding: 8px 12px; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc; }
+        select, input[type="range"] { padding: 6px 10px; font-size: 0.95rem; border-radius: 4px; border: 1px solid #ccc; }
         table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #0056b3; color: #fff; font-weight: bold; position: sticky; top: 0; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: middle; }
+        th { background-color: #0056b3; color: #fff; font-weight: bold; position: sticky; top: 0; z-index: 10; }
         tr:hover { background-color: #f1f1f1; }
         .code { font-family: monospace; background: #e9ecef; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem;}
         .section-row { background-color: #e2e8f0; font-weight: bold; text-align: center; }
@@ -42,20 +42,26 @@
             font-family: 'NgayogyanN', 'Noto Sans Javanese', sans-serif; 
             font-size: 1.5rem; 
             color: #0056b3; 
+            line-height: 1.5;
         }
         .font-default .col-kawi, 
         .font-default .col-tradisional { 
             font-family: 'Ngayogyan', 'Noto Sans Javanese', sans-serif; 
             font-size: 1.5rem; 
             color: #0056b3; 
+            line-height: 1.5;
         }
-        .font-default .col-ipa { 
+        .col-ipa { 
             font-family: 'Charis', sans-serif; 
+            font-size: 1.25rem; /* Perbesaran Awal ~125% */
+            line-height: 1.6;  /* Menjaga agar diakritik atas/bawah tidak terpotong */
         }
-        .font-default .col-jgst { 
+        .col-jgst { 
             font-family: 'Gentium', serif; 
             color: #d9534f; 
             font-weight: bold; 
+            font-size: 1.25rem; /* Perbesaran Awal ~125% */
+            line-height: 1.6;  /* Menjaga agar diakritik atas/bawah tidak terpotong */
         }
 
         /* Pengaturan Saat Noto Sans Javanese Dipilih */
@@ -73,10 +79,7 @@
         .font-noto .col-tradisional { 
             font-size: 1.5rem; 
             color: #0056b3; 
-        }
-        .font-noto .col-jgst { 
-            color: #d9534f; 
-            font-weight: bold; 
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -85,7 +88,7 @@
     <h1>Panduan Pengetikan: Harmonisasi Tata Tulis Aksara Jawa</h1>
     <div class="controls">
         <div class="control-group">
-            <label for="sortOrder"><strong>Pilih Kategori / Urutan:</strong></label>
+            <label for="sortOrder"><strong>Urutan:</strong></label>
             <select id="sortOrder" onchange="renderTable()">
                 <option value="kategori">Berdasarkan Kategori (Wyanjana, Murda, Swara, Rekan)</option>
                 <option value="alphabet">Alfabet Latin (A-Z)</option>
@@ -95,11 +98,18 @@
         </div>
 
         <div class="control-group">
-            <label for="fontSelect"><strong>Pilih Font Mode:</strong></label>
+            <label for="fontSelect"><strong>Font Mode:</strong></label>
             <select id="fontSelect" onchange="updateFontMode()">
                 <option value="font-default">Font Default</option>
                 <option value="font-noto">Noto Sans Javanese</option>
             </select>
+        </div>
+
+        <!-- Slider Khusus IPA & JGST -->
+        <div class="control-group">
+            <label for="diacriticsSize"><strong>Ukuran IPA & JGST:</strong></label>
+            <input type="range" id="diacriticsSize" min="1.0" max="2.0" step="0.05" value="1.25" oninput="updateDiacriticsSize(this.value)">
+            <span id="sizeValue">1.25rem</span>
         </div>
     </div>
 
@@ -214,6 +224,15 @@
             table.className = fontMode;
         }
 
+        function updateDiacriticsSize(size) {
+            document.getElementById('sizeValue').innerText = size + 'rem';
+            const ipaCols = document.querySelectorAll('.col-ipa');
+            const jgstCols = document.querySelectorAll('.col-jgst');
+
+            ipaCols.forEach(col => col.style.fontSize = size + 'rem');
+            jgstCols.forEach(col => col.style.fontSize = size + 'rem');
+        }
+
         function renderTable() {
             const mode = document.getElementById('sortOrder').value;
             let sortedData = [...aksaraData];
@@ -252,6 +271,10 @@
                 `;
                 tbody.appendChild(tr);
             });
+
+            // Terapkan kembali ukuran font slider setelah re-render tabel
+            const currentSize = document.getElementById('diacriticsSize').value;
+            updateDiacriticsSize(currentSize);
         }
 
         renderTable();
