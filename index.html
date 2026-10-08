@@ -26,15 +26,23 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f8f9fa; color: #333; }
         h1 { font-size: 1.5rem; border-bottom: 2px solid #0056b3; padding-bottom: 10px; }
         .controls { margin: 20px 0; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; background: #fff; padding: 15px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .control-group { display: flex; gap: 8px; align-items: center; }
-        select, input[type="range"] { padding: 6px 10px; font-size: 0.95rem; border-radius: 4px; border: 1px solid #ccc; }
-        table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .control-group { display: flex; gap: 8px; align-items: center; position: relative; }
+        select, input[type="range"], button { padding: 6px 10px; font-size: 0.95rem; border-radius: 4px; border: 1px solid #ccc; background-color: #fff; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); table-layout: auto; }
         th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: middle; }
         th { background-color: #0056b3; color: #fff; font-weight: bold; position: sticky; top: 0; z-index: 10; }
         tr:hover { background-color: #f1f1f1; }
         .code { font-family: monospace; background: #e9ecef; padding: 2px 6px; border-radius: 4px; font-size: 0.9rem;}
         .section-row { background-color: #e2e8f0; font-weight: bold; text-align: center; }
         .dash { color: #999; font-weight: normal; }
+
+        /* Custom Multiselect Menu */
+        .dropdown-check-list { display: inline-block; position: relative; }
+        .dropdown-check-list .anchor { position: relative; cursor: pointer; display: inline-block; padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; }
+        .dropdown-check-list .anchor:after { position: absolute; right: 10px; top: 40%; content: ""; border: solid #333; border-width: 0 2px 2px 0; display: inline-block; padding: 3px; transform: rotate(45deg); }
+        .dropdown-check-list ul.items { padding: 8px; display: none; margin: 0; border: 1px solid #ccc; border-radius: 4px; position: absolute; top: 100%; left: 0; background: #fff; z-index: 100; min-width: 180px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); list-style: none; }
+        .dropdown-check-list ul.items li { margin-bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; cursor: pointer; }
+        .dropdown-check-list.visible .items { display: block; }
 
         /* Pengaturan Font Default Per Kolom */
         .font-default .col-sriwedari, 
@@ -81,12 +89,46 @@
             color: #0056b3; 
             line-height: 1.5;
         }
+
+        /* Kelas Sembunyi Kolom secara Dinamis */
+        .col-hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <h1>Panduan Pengetikan: Harmonisasi Tata Tulis Aksara Jawa</h1>
     <div class="controls">
+        <!-- Dropdown Preset View -->
+        <div class="control-group">
+            <label for="presetView"><strong>Preset View:</strong></label>
+            <select id="presetView" onchange="applyPresetView(this.value)">
+                <option value="all">View Semua</option>
+                <option value="jawa">View Aksara Jawa</option>
+                <option value="ipa_jgst">View IPA & JGST</option>
+                <option value="jawa_baru">View Jawa Baru</option>
+                <option value="jawa_kuno">View Jawa Kuno</option>
+            </select>
+        </div>
+
+        <!-- Dropdown Pilih Kolom Individual -->
+        <div class="control-group">
+            <label><strong>Pilih Kolom:</strong></label>
+            <div id="listColToggle" class="dropdown-check-list">
+                <span class="anchor" onclick="toggleDropdownList()">Filter Kolom</span>
+                <ul class="items">
+                    <li><input type="checkbox" checked disabled /> <label style="color:#888;">Input Latin</label></li>
+                    <li><input type="checkbox" id="chk_sriwedari" checked onchange="toggleColumnVisibility('col-sriwedari', this.checked)" /> <label for="chk_sriwedari">Sriwedari/KBJ</label></li>
+                    <li><input type="checkbox" id="chk_simplified" checked onchange="toggleColumnVisibility('col-simplified', this.checked)" /> <label for="chk_simplified">Simplified</label></li>
+                    <li><input type="checkbox" id="chk_kawi" checked onchange="toggleColumnVisibility('col-kawi', this.checked)" /> <label for="chk_kawi">Mardi Kawi</label></li>
+                    <li><input type="checkbox" id="chk_tradisional" checked onchange="toggleColumnVisibility('col-tradisional', this.checked)" /> <label for="chk_tradisional">Tradisional</label></li>
+                    <li><input type="checkbox" id="chk_unicode" checked onchange="toggleColumnVisibility('col-unicode', this.checked)" /> <label for="chk_unicode">Unicode</label></li>
+                    <li><input type="checkbox" id="chk_ipa" checked onchange="toggleColumnVisibility('col-ipa', this.checked)" /> <label for="chk_ipa">IPA/Arab</label></li>
+                    <li><input type="checkbox" id="chk_jgst" checked onchange="toggleColumnVisibility('col-jgst', this.checked)" /> <label for="chk_jgst">JGST</label></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Dropdown Urutan -->
         <div class="control-group">
             <label for="sortOrder"><strong>Urutan:</strong></label>
             <select id="sortOrder" onchange="renderTable()">
@@ -98,6 +140,7 @@
             </select>
         </div>
 
+        <!-- Dropdown Font Mode -->
         <div class="control-group">
             <label for="fontSelect"><strong>Font Mode:</strong></label>
             <select id="fontSelect" onchange="updateFontMode()">
@@ -117,14 +160,14 @@
     <table id="mappingTable" class="font-default">
         <thead>
             <tr>
-                <th>Input Latin</th>
-                <th>Sriwedari / KBJ</th>
-                <th>Simplified</th>
-                <th>Mardi Kawi</th>
-                <th>Tradisional</th>
-                <th>Unicode</th>
-                <th>Pelafalan (IPA) / Asal Arab</th>
-                <th>JGST</th>
+                <th class="col-latin">Input Latin</th>
+                <th class="col-sriwedari">Sriwedari / KBJ</th>
+                <th class="col-simplified">Simplified</th>
+                <th class="col-kawi">Mardi Kawi</th>
+                <th class="col-tradisional">Tradisional</th>
+                <th class="col-unicode">Unicode</th>
+                <th class="col-ipa">Pelafalan (IPA) / Asal Arab</th>
+                <th class="col-jgst">JGST</th>
             </tr>
         </thead>
         <tbody id="tableBody">
@@ -220,7 +263,6 @@
         }
 
         function extractUnicodeValue(uniStr) {
-            // Mengambil titik kode Unicode pertama yang valid (misal "U+A98F" -> 0xA98F)
             const match = uniStr.match(/U\+([0-9A-Fa-f]{4})/);
             return match ? parseInt(match[1], 16) : 0xFFFFFF;
         }
@@ -238,6 +280,73 @@
 
             ipaCols.forEach(col => col.style.fontSize = size + 'rem');
             jgstCols.forEach(col => col.style.fontSize = size + 'rem');
+        }
+
+        /* LOGIKA VISIBILITAS KOLOM & PRESET VIEW */
+        function toggleDropdownList() {
+            const checkList = document.getElementById('listColToggle');
+            checkList.classList.toggle('visible');
+        }
+
+        // Menutup dropdown jika mengklik di luar area menu
+        document.addEventListener('click', function(e) {
+            const checkList = document.getElementById('listColToggle');
+            if (!checkList.contains(e.target)) {
+                checkList.classList.remove('visible');
+            }
+        });
+
+        function toggleColumnVisibility(className, show) {
+            const elements = document.querySelectorAll('.' + className);
+            elements.forEach(el => {
+                if (show) {
+                    el.classList.remove('col-hidden');
+                } else {
+                    el.classList.add('col-hidden');
+                }
+            });
+
+            // Sinkronkan state Checkbox
+            const chkMap = {
+                'col-sriwedari': 'chk_sriwedari',
+                'col-simplified': 'chk_simplified',
+                'col-kawi': 'chk_kawi',
+                'col-tradisional': 'chk_tradisional',
+                'col-unicode': 'chk_unicode',
+                'col-ipa': 'chk_ipa',
+                'col-jgst': 'chk_jgst'
+            };
+            if (chkMap[className]) {
+                const chk = document.getElementById(chkMap[className]);
+                if (chk) chk.checked = show;
+            }
+        }
+
+        function applyPresetView(preset) {
+            const allCols = ['col-sriwedari', 'col-simplified', 'col-kawi', 'col-tradisional', 'col-unicode', 'col-ipa', 'col-jgst'];
+            let visibleCols = [];
+
+            switch (preset) {
+                case 'all':
+                    visibleCols = [...allCols];
+                    break;
+                case 'jawa':
+                    visibleCols = ['col-sriwedari', 'col-simplified', 'col-kawi', 'col-tradisional'];
+                    break;
+                case 'ipa_jgst':
+                    visibleCols = ['col-ipa', 'col-jgst'];
+                    break;
+                case 'jawa_baru':
+                    visibleCols = ['col-sriwedari', 'col-simplified'];
+                    break;
+                case 'jawa_kuno':
+                    visibleCols = ['col-kawi', 'col-tradisional'];
+                    break;
+            }
+
+            allCols.forEach(col => {
+                toggleColumnVisibility(col, visibleCols.includes(col));
+            });
         }
 
         function renderTable() {
@@ -269,19 +378,22 @@
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><span class="code">${item.lat}</span></td>
+                    <td class="col-latin"><span class="code">${item.lat}</span></td>
                     <td class="col-sriwedari">${formatVal(item.kbj)}</td>
                     <td class="col-simplified">${formatVal(item.simp)}</td>
                     <td class="col-kawi">${formatVal(item.mk)}</td>
                     <td class="col-tradisional">${formatVal(item.trad)}</td>
-                    <td><span class="code">${item.uni}</span></td>
+                    <td class="col-unicode"><span class="code">${item.uni}</span></td>
                     <td class="col-ipa">${item.ipa}</td>
                     <td class="col-jgst">${item.jgst}</td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            // Terapkan kembali ukuran font slider setelah re-render tabel
+            // Terpeliharanya Visibilitas & Ukuran Diakritik
+            const presetVal = document.getElementById('presetView').value;
+            applyPresetView(presetVal);
+
             const currentSize = document.getElementById('diacriticsSize').value;
             updateDiacriticsSize(currentSize);
         }
