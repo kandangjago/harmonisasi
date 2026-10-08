@@ -47,10 +47,10 @@ Custom multiselect dropdown untuk hide/show kolom individual tanpa reload.
 - `Font Default`:
   - `Ngayogyan New` untuk Sriwedari & Simplified
   - `Ngayogyan Old` untuk Kawi & Tradisional
-  - `Charis` untuk IPA
-  - `Gentium` untuk JGST (merah, bold)
-- `Noto Sans Javanese` - Mode komparasi universal Google Noto
-
+  - `Charis SIL` untuk IPA
+  - `Gentium Plus` untuk JGST
+- `Noto Sans Javanese`
+- 
 **6. Ukuran IPA & JGST Adjustable**
 Slider 1.0rem – 2.0rem untuk riset diakritik yang presisi.
 
