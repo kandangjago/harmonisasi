@@ -53,15 +53,15 @@
         }
         .col-ipa { 
             font-family: 'Charis', sans-serif; 
-            font-size: 1.25rem; /* Perbesaran Awal ~125% */
-            line-height: 1.6;  /* Menjaga agar diakritik atas/bawah tidak terpotong */
+            font-size: 1.25rem; 
+            line-height: 1.6;  
         }
         .col-jgst { 
             font-family: 'Gentium', serif; 
             color: #d9534f; 
             font-weight: bold; 
-            font-size: 1.25rem; /* Perbesaran Awal ~125% */
-            line-height: 1.6;  /* Menjaga agar diakritik atas/bawah tidak terpotong */
+            font-size: 1.25rem; 
+            line-height: 1.6;  
         }
 
         /* Pengaturan Saat Noto Sans Javanese Dipilih */
@@ -94,6 +94,7 @@
                 <option value="alphabet">Alfabet Latin (A-Z)</option>
                 <option value="hanacaraka">Urutan Hanacaraka</option>
                 <option value="kawi">Warga Aksara (KaKhaGaGhaNga)</option>
+                <option value="unicode">Kode Unicode (U+A984 s.d. U+A9B3)</option>
             </select>
         </div>
 
@@ -218,6 +219,12 @@
             return val === '-' ? '<span class="dash">-</span>' : val;
         }
 
+        function extractUnicodeValue(uniStr) {
+            // Mengambil titik kode Unicode pertama yang valid (misal "U+A98F" -> 0xA98F)
+            const match = uniStr.match(/U\+([0-9A-Fa-f]{4})/);
+            return match ? parseInt(match[1], 16) : 0xFFFFFF;
+        }
+
         function updateFontMode() {
             const fontMode = document.getElementById('fontSelect').value;
             const table = document.getElementById('mappingTable');
@@ -243,6 +250,8 @@
                 sortedData.sort((a, b) => a.hana - b.hana);
             } else if (mode === 'kawi') {
                 sortedData.sort((a, b) => a.warga - b.warga);
+            } else if (mode === 'unicode') {
+                sortedData.sort((a, b) => extractUnicodeValue(a.uni) - extractUnicodeValue(b.uni));
             }
 
             const tbody = document.getElementById('tableBody');
